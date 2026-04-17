@@ -31,7 +31,7 @@ public final class CreateUserService implements CreateUserUseCase {
   @Override
   public UserModel execute(final CreateUserCommand command) {
     validateCommand(command);
-    logUserCreation(command);
+    log.info("Creando usuario.");
     ensureEmailIsUnique(command.email());
 
     final UserModel userToSave = buildUserModel(command);
@@ -46,10 +46,6 @@ public final class CreateUserService implements CreateUserUseCase {
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(violations);
     }
-  }
-
-  private void logUserCreation(final CreateUserCommand command) {
-    log.info(String.format("Creando usuario con email=%s, nombre=%s", command.email(), command.name()));
   }
 
   private void ensureEmailIsUnique(final String rawEmail) {

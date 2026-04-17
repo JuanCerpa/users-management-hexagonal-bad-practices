@@ -5,7 +5,12 @@ import com.jcaa.usersmanagement.domain.exception.EmailSenderException;
 import com.jcaa.usersmanagement.domain.model.EmailDestinationModel;
 import lombok.extern.java.Log;
 
-import javax.mail.*;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
@@ -21,7 +26,7 @@ public final class JavaMailEmailSenderAdapter implements EmailSenderPort {
   private static final String MAIL_SMTP_STARTTLS = "mail.smtp.starttls.enable";
   private static final String CONTENT_TYPE_HTML = "text/html; charset=UTF-8";
   private static final String CHARSET_UTF8 = "UTF-8";
-  private static final String SENDER_EMAIL_LOG = "Correo enviado exitosamente a: {0}";
+  private static final String SENDER_EMAIL_LOG = "Correo enviado exitosamente.";
 
   private final Session mailSession;
   private final String fromAddress;
@@ -38,7 +43,7 @@ public final class JavaMailEmailSenderAdapter implements EmailSenderPort {
     try {
       final MimeMessage message = buildMessage(destination);
       Transport.send(message);
-      log.log(Level.INFO, SENDER_EMAIL_LOG, destination.getDestinationEmail());
+      log.log(Level.INFO, SENDER_EMAIL_LOG);
     } catch (final MessagingException | UnsupportedEncodingException exception) {
       throw EmailSenderException.becauseSmtpFailed(
           destination.getDestinationEmail(), exception.getMessage());
@@ -48,10 +53,7 @@ public final class JavaMailEmailSenderAdapter implements EmailSenderPort {
   private MimeMessage buildMessage(final EmailDestinationModel destination)
       throws MessagingException, UnsupportedEncodingException {
     final MimeMessage message = new MimeMessage(mailSession);
-    // VIOLACIÓN Regla 4: se usa el nombre completo de la clase InternetAddress dentro del código.
-    // Solo debe usarse el nombre completo cuando hay ambigüedad; en este caso no la hay
-    // ya que está importado correctamente con el wildcard.
-    message.setFrom(new javax.mail.internet.InternetAddress(fromAddress, fromName, CHARSET_UTF8));
+    message.setFrom(new InternetAddress(fromAddress, fromName, CHARSET_UTF8));
     message.addRecipient(
         Message.RecipientType.TO,
         new InternetAddress(
