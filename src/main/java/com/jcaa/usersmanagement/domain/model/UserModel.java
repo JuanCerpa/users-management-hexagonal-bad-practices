@@ -35,6 +35,11 @@ public class UserModel {
     return new UserModel(id, name, email, password, role, UserStatus.INACTIVE);
   }
 
+  public String getIdValue() { return id.value(); }
+  public String getNameValue() { return name.value(); }
+  public String getEmailValue() { return email.value(); }
+  public String getPasswordValue() { return password.value(); }
+
   public boolean passwordMatches(String plainText) {
     return password.verifyPlain(plainText);
   }
