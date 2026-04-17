@@ -34,4 +34,12 @@ public class UserModel {
   public UserModel deactivate() {
     return new UserModel(id, name, email, password, role, UserStatus.INACTIVE);
   }
+
+  public boolean passwordMatches(String plainText) {
+    return password.verifyPlain(plainText);
+  }
+
+  public boolean isAllowedToLogin() {
+    return status == UserStatus.ACTIVE;
+  }
 }
