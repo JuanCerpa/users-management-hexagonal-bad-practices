@@ -32,8 +32,7 @@ public final class UpdateUserService implements UpdateUserUseCase {
   @Override
   public UserModel execute(final UpdateUserCommand command) {
     validateCommand(command);
-
-    log.info(String.format("Actualizando usuario id=%s, email=%s, nombre=%s", command.id(), command.email(), command.name()));
+    log.info("Actualizando usuario.");
 
     final UserId userId = new UserId(command.id());
     final UserModel current = findExistingUserOrFail(userId);

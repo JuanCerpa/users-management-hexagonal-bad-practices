@@ -65,7 +65,7 @@ public final class UserRepositoryMySQL
 
   @Override
   public UserModel save(final UserModel user) {
-    final UserPersistenceDto dto = persistenceMapper.fromModelToDto(user);
+    final UserPersistenceDto dto = UserPersistenceMapper.fromModelToDto(user);
     executeSave(dto);
     return findByIdOrFail(user.getId());
   }

@@ -46,31 +46,28 @@ public final class DependencyContainer {
     final Connection connection = buildDatabaseConnection(properties);
     final UserRepositoryMySQL userRepository = new UserRepositoryMySQL(connection);
 
-    final JavaMailEmailSenderAdapter emailSender =
-        new JavaMailEmailSenderAdapter(buildSmtpConfig(properties));
+    final JavaMailEmailSenderAdapter emailSender = new JavaMailEmailSenderAdapter(buildSmtpConfig(properties));
     final EmailNotificationService emailNotification = new EmailNotificationService(emailSender);
 
     // Construir Validator para las validaciones en la capa de aplicación
     final Validator validator = ValidatorProvider.buildValidator();
 
-    final CreateUserUseCase createUserUseCase =
-        new CreateUserService(userRepository, userRepository, emailNotification, validator);
-    final UpdateUserUseCase updateUserUseCase =
-        new UpdateUserService(userRepository, userRepository, userRepository, emailNotification, validator);
-    final DeleteUserUseCase deleteUserUseCase =
-        new DeleteUserService(userRepository, userRepository, validator);
+    final CreateUserUseCase createUserUseCase = new CreateUserService(userRepository, userRepository, emailNotification,
+        validator);
+    final UpdateUserUseCase updateUserUseCase = new UpdateUserService(userRepository, userRepository, userRepository,
+        emailNotification, validator);
+    final DeleteUserUseCase deleteUserUseCase = new DeleteUserService(userRepository, userRepository, validator);
     final GetUserByIdUseCase getUserByIdUseCase = new GetUserByIdService(userRepository, validator);
     final GetAllUsersUseCase getAllUsersUseCase = new GetAllUsersService(userRepository);
     final LoginUseCase loginUseCase = new LoginService(userRepository, validator);
 
-    this.userController =
-        new UserController(
-            createUserUseCase,
-            updateUserUseCase,
-            deleteUserUseCase,
-            getUserByIdUseCase,
-            getAllUsersUseCase,
-            loginUseCase);
+    this.userController = new UserController(
+        createUserUseCase,
+        updateUserUseCase,
+        deleteUserUseCase,
+        getUserByIdUseCase,
+        getAllUsersUseCase,
+        loginUseCase);
   }
 
   public UserController userController() {
@@ -85,9 +82,8 @@ public final class DependencyContainer {
             properties.get(DB_NAME),
             properties.get(DB_USER),
             properties.get(DB_PASSWORD));
-    // VIOLACIÓN Regla 4 (consecuencia): DatabaseConnectionFactory ya no tiene @UtilityClass,
-    // por lo que debe instanciarse para llamar a createConnection.
-    return new DatabaseConnectionFactory().createConnection(config);
+    return DatabaseConnectionFactory.createConnection(config);
+
   }
 
   private static SmtpConfig buildSmtpConfig(final AppProperties properties) {

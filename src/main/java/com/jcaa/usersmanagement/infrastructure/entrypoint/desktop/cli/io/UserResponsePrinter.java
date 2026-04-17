@@ -3,6 +3,7 @@ package com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.io;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.UserResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public final class UserResponsePrinter {
   }
 
   public void printSummary(final List<UserResponse> users) {
-    if (users == null || users.isEmpty()) {
+    if (Objects.isNull(users) || users.isEmpty()) {
       console.println("  No users found.");
       return;
     }
@@ -52,4 +53,4 @@ public final class UserResponsePrinter {
   private static String getStatusLabel(final String status) {
     return STATUS_LABELS.getOrDefault(status, "Estado desconocido");
   }
-}
+}

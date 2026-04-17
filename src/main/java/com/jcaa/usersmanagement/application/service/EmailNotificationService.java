@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.logging.Level;
 
 @Log
 @RequiredArgsConstructor
@@ -100,10 +99,7 @@ public final class EmailNotificationService {
     try {
       emailSenderPort.send(destination);
     } catch (final EmailSenderException senderException) {
-      log.log(
-          Level.WARNING,
-          "No se pudo enviar correo a: {0}. Causa: {1}",
-          new Object[] {destination.getDestinationEmail(), senderException.getMessage()});
+      log.warning("No se pudo enviar correo de notificación.");
       throw senderException;
     }
   }

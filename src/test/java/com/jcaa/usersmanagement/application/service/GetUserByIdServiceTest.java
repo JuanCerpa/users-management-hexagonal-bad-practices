@@ -1,8 +1,11 @@
 package com.jcaa.usersmanagement.application.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 import com.jcaa.usersmanagement.application.port.out.GetUserByIdPort;
 import com.jcaa.usersmanagement.application.service.dto.query.GetUserByIdQuery;
@@ -25,11 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/**
- * Tests para GetUserByIdService.
- *
- * <p>Cubre: retorno del usuario encontrado, UserNotFoundException y validación del query.
- */
 @DisplayName("GetUserByIdService")
 @ExtendWith(MockitoExtension.class)
 class GetUserByIdServiceTest {
@@ -45,12 +43,10 @@ class GetUserByIdServiceTest {
     }
   }
 
-  // ── flujo feliz
-
   @Test
-  @DisplayName("execute() retorna el usuario cuando el id existe")
+  @DisplayName("execute() returns user when id exists")
   void shouldReturnUserWhenFound() {
-    // VIOLACIÓN Regla 11: se eliminaron los comentarios de estructura Arrange–Act–Assert.
+    // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("u-001");
     final UserModel expected =
         new UserModel(
@@ -61,22 +57,28 @@ class GetUserByIdServiceTest {
             UserRole.ADMIN,
             UserStatus.ACTIVE);
     when(getUserByIdPort.getById(any())).thenReturn(Optional.of(expected));
+
+    // Act
     final UserModel result = service.execute(query);
-    // VIOLACIÓN Regla 11: assertTrue(result == expected) en lugar de assertSame(expected, result).
-    assertTrue(result != null);
-    assertTrue(result == expected);
+
+    // Assert
+    assertNotNull(result);
+    assertSame(expected, result);
   }
 
-  // VIOLACIÓN Regla 11: falta @DisplayName en el método.
   @Test
+  @DisplayName("execute() throws UserNotFoundException when id does not exist")
   void shouldThrowWhenUserNotFound() {
+    // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("no-existe");
     when(getUserByIdPort.getById(any())).thenReturn(Optional.empty());
+
+    // Act & Assert
     assertThrows(UserNotFoundException.class, () -> service.execute(query));
   }
 
   @Test
-  @DisplayName("execute() lanza ConstraintViolationException cuando el id está en blanco")
+  @DisplayName("execute() throws ConstraintViolationException when id is blank")
   void shouldThrowWhenQueryIsInvalid() {
     // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("");
@@ -86,3 +88,4 @@ class GetUserByIdServiceTest {
     verifyNoInteractions(getUserByIdPort);
   }
 }
+

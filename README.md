@@ -70,73 +70,18 @@ El proyecto aplica **Arquitectura Hexagonal** (Ports & Adapters) combinada con p
 
 ---
 
-##  Propósito educativo: catálogo de malas prácticas
+## Calidad y cumplimiento de reglas
 
-Este proyecto fue construido intencionalmente como un **catálogo de antipatrones y violaciones de Clean Code**. El código es completamente funcional y cuenta con 193 pruebas unitarias que pasan sin errores, pero cada clase contiene al menos una violación etiquetada con comentarios que explican el problema, su impacto y la solución correcta.
+El proyecto está alineado con las reglas de arquitectura hexagonal y clean code definidas en `Reglas 1.md` y `Reglas 2.md`.
 
-El objetivo es proporcionar ejemplos concretos y contextualizados de las prácticas que debemos **identificar y evitar** en el desarrollo de software profesional. Cada violación está anotada directamente en el código fuente con el formato:
+Se aplicaron mejoras de diseño y calidad en:
 
-```java
-// Clean Code - Regla N (nombre de la regla):
-// Descripción del problema.
-// La regla dice: ...
-// Solución: ...
-```
-
-### Reglas de Clean Code violadas
-
----
-
-#### Tabla 1 — Violaciones según reglas de Hexagonal y estilo con Java
-
-| # | Regla | Violación aplicada | Archivos con ejemplos |
-|---|---|---|---|
-| 1 | **Estructura — Arquitectura Hexagonal** | El dominio importa y depende de una clase de infraestructura (`UserEntity`). El entrypoint construye commands de aplicación directamente sin pasar por el mapper. | `UserModel`, `UserController` |
-| 2 | **Modelado y tipos** | Los DTOs de salida usan `@Data` en lugar de `record`. El modelo de dominio usa `@Data` en lugar de `@Value`, exponiendo setters que violan sus invariantes. | `UserResponse`, `UserModel` |
-| 3 | **Lombok y validaciones** | `@Valid` declarado sobre `@Override` en la implementación del caso de uso, no en la interfaz (puerto). | `GetUserByIdService` |
-| 4 | **Estilo y naming** | Abreviaturas en variables (`v`, `r`, `usrs`, `pw`, `opt`); `== null` en lugar de `Objects.isNull`; imports con wildcard `*`; clases de utilidad sin `@UtilityClass`; nombre completo de clase dentro del código donde ya existe el import. | `ConsoleIO`, `UserId`, `UserName`, `UserPassword`, `UserRepositoryMySQL`, `UserPersistenceMapper`, `ValidatorProvider`, `JavaMailEmailSenderAdapter` |
-| 5 | **Manejo de Strings** | Un método retorna `null` cuando la lista de usuarios está vacía en lugar de retornar una colección vacía u `Optional`. | `GetAllUsersService` |
-| 6 | **Excepciones, logging y telemetría** | Log de dato PII (email del usuario) en capa de dominio. `try-catch` que captura excepciones no recuperables en lugar de dejarlas propagar al manejador global. Log de PII dentro de bloques `catch` en handlers del CLI. | `UserEmail`, `DeleteUserService`, `CreateUserHandler`, `LoginHandler` |
-| 7 | **Mappers y (de)serialización** | Mapper de persistencia escrito manualmente en lugar de usar MapStruct. El entrypoint construye commands del dominio directamente, sin delegar al mapper de la capa. | `UserPersistenceMapper`, `UserController` |
-| 9 | **Buenas prácticas de diseño** | Servicios con múltiples responsabilidades (validar, persistir, notificar, loguear en un mismo método). Dominio acoplado a infraestructura, violando la regla de dependencias hacia el centro. | `CreateUserService`, `LoginService`, `UserModel` |
-| 10 | **Calidad** | Magic numbers sin constantes descriptivas (`8`, `12`, `3`). Textos de error y mensajes de UI hardcodeados como literales en lugar de constantes con nombre. | `UserPassword`, `UserName`, `ConsoleIO`, `UserNotFoundException`, `InvalidCredentialsException` |
-| 11 | **Pruebas** | Tests sin estructura `// Arrange — Act — Assert`. Aserciones obsoletas o incorrectas (`assertTrue(result != null)` en lugar de `assertNotNull`; `assertTrue(result == activeUser)` en lugar de `assertSame`). Tests sin `@DisplayName`. | `LoginServiceTest` |
-
-> La regla **8 (HTTP saliente / WebClient)** no aplica: este proyecto no realiza llamadas HTTP salientes.
-
----
-
-#### Tabla 2 — Violaciones según `Clean Code
-
-| # | Regla | Descripción de la violación | Archivos con ejemplos |
-|---|---|---|---|
-| 1 | **Una sola cosa por función** | Métodos que mezclan validación, construcción de dominio, persistencia, notificación y logging en un único bloque, sin posibilidad de describirse con un solo verbo. | `CreateUserService.execute`, `LoginService.getAndValidateUser` |
-| 2 | **Funciones pequeñas** | Métodos que crecen hasta convertirse en mini-clases: hacen fetch, null-check, verificación de credenciales, validación de estado y retorno todo seguido. | `CreateUserService.execute`, `LoginService.getAndValidateUser` |
-| 3 | **Un solo nivel de abstracción por función** | Métodos que combinan lógica de negocio de alto nivel con detalles técnicos de bajo nivel (I/O de classpath, manipulación de strings, construcción manual de objetos de dominio). | `CreateUserService.execute`, `EmailNotificationService.notifyUserCreated` |
-| 4 | **Leer el código de arriba hacia abajo** | Método privado auxiliar (`renderTemplate`) declarado antes que los métodos públicos que lo invocan. Variables abreviadas que interrumpen la lectura secuencial natural. | `EmailNotificationService`, `ConsoleIO` |
-| 5 | **Pocos parámetros por función** | Métodos que reciben cada campo del usuario como parámetro `String` o `int` primitivo suelto en lugar de encapsularlos en un objeto. | `UserRepositoryMySQL.saveWithFields`, `UserValidationUtils.canPerformAction` |
-| 6 | **Evitar parámetros booleanos de control** | Parámetros `boolean` que bifurcan el flujo interno del método en dos comportamientos completamente distintos, señal clara de dos responsabilidades. | `UpdateUserService.notifyIfRequired`, `EmailNotificationService.sendNotificationWithFlag` |
-| 7 | **Evitar efectos secundarios ocultos** | Métodos que realizan acciones inesperadas (logging de advertencia, cambios de flujo) que su nombre no comunica al llamador. | `UpdateUserService.notifyIfRequired`, `EmailNotificationService.sendOrLog` |
-| 8 | **Separar comandos y consultas (CQS)** | Métodos que modifican estado (persistencia, actualización) y al mismo tiempo retornan el resultado como si fueran una simple consulta. | `LoginService.getAndValidateUser`, `UpdateUserService.execute` |
-| 9 | **Código expresivo antes que comentarios** | Comentarios que tapan nombres pobres, bloques poco expresivos o diseño confuso en lugar de mejorar nombres y extraer funciones. | `CreateUserService.execute` |
-| 10 | **Eliminar comentarios redundantes** | Comentarios que repiten literalmente lo que ya dice el código inmediato; magic numbers cuyo significado debe inferirse sin nombre descriptivo. | `CreateUserService`, `UserRepositoryMySQL`, `UserPassword`, `UserName` |
-| 11 | **Evitar duplicación de conocimiento** | Lógica de orquestación idéntica (`loadTemplate → render → build → send`) repetida en dos métodos. Validaciones de negocio repetidas sin centralización. | `EmailNotificationService` (`notifyUserCreated` / `notifyUserUpdated`), `UserValidationUtils` |
-| 12 | **Alta cohesión real** | Clases cuyos métodos trabajan sobre conceptos dispares y vagamente relacionados, sin un foco de negocio claro y único. | `LoginService`, `UserValidationUtils` |
-| 13 | **Evitar clases utilitarias innecesarias** | Clases `Utils` con lógica que pertenece al dominio o a objetos de negocio; mappers manuales que deberían generarse automáticamente con MapStruct. | `UserValidationUtils`, `UserPersistenceMapper` |
-| 14 | **Ley de Deméter** | Cadenas de llamadas que navegan a los internals de objetos ajenos en lugar de delegar la operación al propio objeto. | `LoginService` (`user.getPassword().verifyPlain()`), `UserPersistenceMapper` (`user.getId().value()`) |
-| 15 | **Inmutabilidad como preferencia** | Modelo de dominio y DTO de respuesta usan `@Data`, que genera setters públicos y permite modificar el estado desde cualquier parte sin pasar por invariantes. | `UserModel` (debería ser `@Value`), `UserResponse` (debería ser `record`) |
-| 16 | **Evitar condicionales repetitivas** | Cadena `if/else if` que crece con cada nuevo estado posible. Debería encapsularse en un `Map<String, String>` o en un método `getDisplayLabel()` del propio enum. | `UserResponsePrinter.getStatusLabel` |
-| 17 | **Manejo limpio de condiciones** | Expresiones booleanas excesivamente largas, redundantes o crípticas que llaman al repositorio tres veces en una misma condición y ocultan la intención central. | `LoginService`, `UpdateUserService.ensureEmailIsNotTakenByAnotherUser` |
-| 18 | **Evitar magic numbers y literales** | Valores especiales sin nombre (`8`, `12`, `3`, `"ACTIVE"`, `"PENDING"`) cuyo significado debe inferirse por contexto. | `UserPassword`, `UserName`, `UserValidationUtils` |
-| 19 | **Evitar temporal coupling** | API que exige llamar a `init()` antes de cualquier operación pero el diseño no lo encapsula ni protege; orden de llamada implícito y frágil. | `UserRepositoryMySQL.init()`, `DependencyContainer` |
-| 20 | **Objeto antes que primitivo** | `String` e `int` desnudos donde el dominio tiene tipos propios (`UserId`, `UserEmail`, `UserStatus`) con validaciones e invariantes encapsuladas. | `UserValidationUtils.canPerformAction`, `UserController.findUserById(String)` |
-| 21 | **No usar códigos especiales de error** | Valores especiales (`-1`, `null`) para representar errores o ausencia en lugar de lanzar excepción o retornar `Optional` con semántica clara. | `UserApplicationMapper.roleToCode` (retorna `-1`), `GetAllUsersService` (retorna `null`) |
-| 22 | **Código fácil de borrar y refactorizar** | Acoplamiento rígido a clases concretas que impide reemplazar cualquier componente sin editar múltiples puntos de entrada; dependencias no intercambiables. | `DependencyContainer`, `Main` |
-| 23 | **Minimizar conocimiento disperso** | La regla de "qué es un email válido" está fragmentada en tres lugares distintos sin una fuente de verdad única. | `UserEmail` (regex completo), `UserValidationUtils.isValidEmail` (validación simplificada) |
-| 24 | **Consistencia semántica** | El mismo concepto —"entrada de consola" o "email del usuario"— recibe nombres distintos en la misma clase sin ninguna justificación. | `UserApplicationMapper` (`correo` vs `correoElectronico`), `ConsoleIO` (`v` vs `r`) |
-| 25 | **Preferir claridad sobre ingenio** | Expresiones que impresionan al autor pero castigan al lector; código que requiere descomponer mentalmente múltiples niveles de anidamiento para entender una intención simple. | `EmailNotificationService.notifyUserCreated`, `UpdateUserService.ensureEmailIsNotTakenByAnotherUser` |
-| 26 | **Evitar sobrecompactación** | Múltiples decisiones comprimidas en una sola expresión o línea cuando separarlas en pasos nombrados mejoraría radicalmente la comprensión. | `EmailNotificationService.notifyUserCreated`, `UpdateUserService.ensureEmailIsNotTakenByAnotherUser` |
-| 27 | **Código listo para leer** | Código funcionalmente correcto pero incomprensible sin explicación oral del autor; la intención no se deduce desde nombres, estructura ni responsabilidades. | `UserResponsePrinter.printSummary`, `UpdateUserService.ensureEmailIsNotTakenByAnotherUser` |
+- separación clara por capas (dominio, aplicación, entrypoint y adapters),
+- uso consistente de tipos de dominio y mappers entre capas,
+- validaciones en contratos públicos y comandos/queries,
+- manejo de errores con excepciones expresivas y mensajes centralizados,
+- logging sin exposición de PII,
+- pruebas con estructura AAA, `@DisplayName` y aserciones semánticas.
 
 ---
 
