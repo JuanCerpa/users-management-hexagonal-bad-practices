@@ -26,8 +26,12 @@ public final class LoginService implements LoginUseCase {
     final UserEmail email = new UserEmail(command.email());
     final UserModel user = findUserByEmail(email);
 
+<<<<<<< HEAD
     verifyPassword(user, command.password());
     verifyUserStatus(user);
+=======
+    validateUserCredentials(user, command.password());
+>>>>>>> refactoring-clean-code
 
     return user;
   }
@@ -37,6 +41,7 @@ public final class LoginService implements LoginUseCase {
         .orElseThrow(InvalidCredentialsException::becauseCredentialsAreInvalid);
   }
 
+<<<<<<< HEAD
   private void verifyPassword(final UserModel user, final String plainPassword) {
     if (!user.passwordMatches(plainPassword)) {
       throw InvalidCredentialsException.becauseCredentialsAreInvalid();
@@ -45,6 +50,13 @@ public final class LoginService implements LoginUseCase {
 
   private void verifyUserStatus(final UserModel user) {
     if (!user.isAllowedToLogin()) {
+=======
+  private void validateUserCredentials(final UserModel user, final String plainPassword) {
+    if (!user.passwordMatches(plainPassword)) {
+      throw InvalidCredentialsException.becauseCredentialsAreInvalid();
+    }
+    if (!user.isActive()) {
+>>>>>>> refactoring-clean-code
       throw InvalidCredentialsException.becauseUserIsNotActive();
     }
   }

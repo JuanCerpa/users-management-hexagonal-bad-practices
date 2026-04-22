@@ -7,6 +7,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+<<<<<<< HEAD
+=======
+import lombok.experimental.UtilityClass;
+
+>>>>>>> refactoring-clean-code
 @UtilityClass
 public class DatabaseConnectionFactory {
 

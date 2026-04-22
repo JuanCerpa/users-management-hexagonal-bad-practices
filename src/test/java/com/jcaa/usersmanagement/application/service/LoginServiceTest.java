@@ -47,7 +47,11 @@ class LoginServiceTest {
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() returns user when credentials are valid and user is ACTIVE")
+=======
+  @DisplayName("execute() should return the user when credentials are valid and account is active")
+>>>>>>> refactoring-clean-code
   void shouldReturnUserWhenCredentialsAreValidAndUserIsActive() {
     // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, PASSWORD);
@@ -69,8 +73,15 @@ class LoginServiceTest {
     assertSame(activeUser, result);
   }
 
+<<<<<<< HEAD
   @Test
   @DisplayName("execute() throws InvalidCredentialsException when email does not exist")
+=======
+  // ── email no registrado
+
+  @Test
+  @DisplayName("execute() should throw InvalidCredentialsException when email does not exist")
+>>>>>>> refactoring-clean-code
   void shouldThrowWhenEmailNotFound() {
     // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, PASSWORD);
@@ -81,7 +92,11 @@ class LoginServiceTest {
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() throws InvalidCredentialsException when password is invalid")
+=======
+  @DisplayName("execute() should throw InvalidCredentialsException when password does not match")
+>>>>>>> refactoring-clean-code
   void shouldThrowWhenPasswordIsWrong() {
     // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, "WrongPass99");
@@ -100,7 +115,11 @@ class LoginServiceTest {
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() throws InvalidCredentialsException when user status is not ACTIVE")
+=======
+  @DisplayName("execute() should throw InvalidCredentialsException when user status is not ACTIVE")
+>>>>>>> refactoring-clean-code
   void shouldThrowWhenUserIsNotActive() {
     // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, PASSWORD);

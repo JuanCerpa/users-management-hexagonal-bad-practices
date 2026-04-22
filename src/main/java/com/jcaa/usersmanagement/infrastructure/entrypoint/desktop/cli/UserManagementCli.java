@@ -26,6 +26,7 @@ public final class UserManagementCli implements ApplicationEntryPoint {
            Users Management System
       ==========================================""";
 
+
   private static final String MENU_BORDER = "  ==========================================";
 
   private final UserController userController;

@@ -13,13 +13,24 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+<<<<<<< HEAD
 @DisplayName("UserPassword")
+=======
+@DisplayName("UserPassword Value Object Test Suite")
+>>>>>>> refactoring-clean-code
 class UserPasswordTest {
 
   @ParameterizedTest
+  @DisplayName("Should normalize and hash password correctly")
   @ValueSource(strings = {"password123", "   password123   "})
   @DisplayName("fromPlainText() normalizes input and stores a hash")
   void shouldNormalizeAndHashPassword(final String input) {
+<<<<<<< HEAD
+=======
+    // Arrange
+    // (input provided by ParameterizedTest)
+
+>>>>>>> refactoring-clean-code
     // Act
     final UserPassword result = UserPassword.fromPlainText(input);
 

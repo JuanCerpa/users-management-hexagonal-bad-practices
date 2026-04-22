@@ -6,8 +6,15 @@ import jakarta.validation.ValidatorFactory;
 import lombok.experimental.UtilityClass;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 
+<<<<<<< HEAD
 @UtilityClass
 public class ValidatorProvider {
+=======
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class ValidatorProvider {
+>>>>>>> refactoring-clean-code
 
 
   public static Validator buildValidator() {

@@ -7,7 +7,12 @@ import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.controller.Use
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.CreateUserRequest;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
+<<<<<<< HEAD
+=======
+import lombok.extern.java.Log;
+>>>>>>> refactoring-clean-code
 
+@Log
 @RequiredArgsConstructor
 public final class CreateUserHandler implements OperationHandler {
 
@@ -17,18 +22,21 @@ public final class CreateUserHandler implements OperationHandler {
 
   @Override
   public void handle() {
-    final String id       = console.readRequired("ID                              : ");
-    final String name     = console.readRequired("Name                            : ");
-    final String email    = console.readRequired("Email                           : ");
+    final String id = console.readRequired("ID                              : ");
+    final String name = console.readRequired("Name                            : ");
+    final String email = console.readRequired("Email                           : ");
     final String password = console.readRequired("Password                        : ");
-    final String role     = console.readRequired("Role (ADMIN / MEMBER / REVIEWER): ");
+    final String role = console.readRequired("Role (ADMIN / MEMBER / REVIEWER): ");
 
     try {
-      final UserResponse created =
-          userController.createUser(new CreateUserRequest(id, name, email, password, role));
+      final UserResponse created = userController.createUser(new CreateUserRequest(id, name, email, password, role));
       console.println("\n  User created successfully.");
       printer.print(created);
     } catch (final UserAlreadyExistsException exception) {
+<<<<<<< HEAD
+=======
+      log.warning("Intento de creación de usuario fallido: el usuario ya existe.");
+>>>>>>> refactoring-clean-code
       console.println("  Error: " + exception.getMessage());
     }
   }

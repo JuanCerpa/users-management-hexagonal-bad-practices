@@ -30,9 +30,16 @@ public final class UpdateUserService implements UpdateUserUseCase {
   private final Validator validator;
 
   @Override
+<<<<<<< HEAD
   public UserModel execute(final UpdateUserCommand command) {
     validateCommand(command);
     log.info("Actualizando usuario.");
+=======
+  public void execute(final UpdateUserCommand command) {
+    validateCommand(command);
+
+    log.info("Actualizando usuario id=" + command.id());
+>>>>>>> refactoring-clean-code
 
     final UserId userId = new UserId(command.id());
     final UserModel current = findExistingUserOrFail(userId);
@@ -44,6 +51,7 @@ public final class UpdateUserService implements UpdateUserUseCase {
         UserApplicationMapper.fromUpdateCommandToModel(command, current.getPassword());
     final UserModel updatedUser = updateUserPort.update(userToUpdate);
 
+<<<<<<< HEAD
     notifyUserUpdated(updatedUser);
 
     return updatedUser;
@@ -51,6 +59,9 @@ public final class UpdateUserService implements UpdateUserUseCase {
 
   private void notifyUserUpdated(final UserModel user) {
     emailNotificationService.notifyUserUpdated(user);
+=======
+    emailNotificationService.notifyUserUpdated(updatedUser);
+>>>>>>> refactoring-clean-code
   }
 
   private void validateCommand(final UpdateUserCommand command) {
@@ -67,11 +78,20 @@ public final class UpdateUserService implements UpdateUserUseCase {
   }
 
   private void ensureEmailIsNotTakenByAnotherUser(final UserEmail newEmail, final UserId ownerId) {
+<<<<<<< HEAD
     getUserByEmailPort.getByEmail(newEmail).ifPresent(user -> {
       if (!user.getId().equals(ownerId)) {
         throw UserAlreadyExistsException.becauseEmailAlreadyExists(newEmail.value());
       }
     });
+=======
+    getUserByEmailPort.getByEmail(newEmail)
+        .ifPresent(existingUser -> {
+          if (!existingUser.getId().equals(ownerId)) {
+            throw UserAlreadyExistsException.becauseEmailAlreadyExists(newEmail.value());
+          }
+        });
+>>>>>>> refactoring-clean-code
   }
 }
 

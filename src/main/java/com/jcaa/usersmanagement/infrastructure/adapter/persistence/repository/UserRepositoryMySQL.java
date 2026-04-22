@@ -33,6 +33,10 @@ public final class UserRepositoryMySQL
         GetAllUsersPort,
         DeleteUserPort {
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refactoring-clean-code
   private static final String SQL_INSERT =
       "INSERT INTO users "
       + "(id, name, email, password, role, status, created_at, updated_at) "
@@ -63,6 +67,11 @@ public final class UserRepositoryMySQL
 
   private final Connection connection;
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> refactoring-clean-code
   @Override
   public UserModel save(final UserModel user) {
     final UserPersistenceDto dto = UserPersistenceMapper.fromModelToDto(user);
@@ -70,6 +79,10 @@ public final class UserRepositoryMySQL
     return findByIdOrFail(user.getId());
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refactoring-clean-code
   @Override
   public UserModel update(final UserModel user) {
     final UserPersistenceDto dto = UserPersistenceMapper.fromModelToDto(user);

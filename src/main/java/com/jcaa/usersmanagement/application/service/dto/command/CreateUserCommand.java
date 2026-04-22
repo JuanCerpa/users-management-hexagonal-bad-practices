@@ -3,7 +3,10 @@ package com.jcaa.usersmanagement.application.service.dto.command;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refactoring-clean-code
 public record CreateUserCommand(
     @NotBlank String id,
     @NotBlank

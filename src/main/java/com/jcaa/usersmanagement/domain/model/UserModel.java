@@ -35,6 +35,7 @@ public class UserModel {
     return new UserModel(id, name, email, password, role, UserStatus.INACTIVE);
   }
 
+<<<<<<< HEAD
   public String getIdValue() { return id.value(); }
   public String getNameValue() { return name.value(); }
   public String getEmailValue() { return email.value(); }
@@ -46,5 +47,37 @@ public class UserModel {
 
   public boolean isAllowedToLogin() {
     return status == UserStatus.ACTIVE;
+=======
+  public boolean isActive() {
+    return status == UserStatus.ACTIVE;
+  }
+
+  public boolean passwordMatches(final String plainPassword) {
+    return password.verifyPlain(plainPassword);
+  }
+
+  public String idValue() {
+    return id.value();
+  }
+
+  public String nameValue() {
+    return name.value();
+  }
+
+  public String emailValue() {
+    return email.value();
+  }
+
+  public String passwordValue() {
+    return password.value();
+  }
+
+  public String roleName() {
+    return role.name();
+  }
+
+  public String statusName() {
+    return status.name();
+>>>>>>> refactoring-clean-code
   }
 }

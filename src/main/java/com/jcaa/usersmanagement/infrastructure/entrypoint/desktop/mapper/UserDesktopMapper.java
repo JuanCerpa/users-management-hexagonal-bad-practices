@@ -15,8 +15,15 @@ import java.util.List;
 import java.util.Objects;
 import lombok.experimental.UtilityClass;
 
+<<<<<<< HEAD
 @UtilityClass
 public class UserDesktopMapper {
+=======
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class UserDesktopMapper {
+>>>>>>> refactoring-clean-code
 
   public static CreateUserCommand toCreateCommand(final CreateUserRequest request) {
     return new CreateUserCommand(

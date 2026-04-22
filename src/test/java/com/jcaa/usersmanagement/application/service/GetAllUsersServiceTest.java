@@ -22,7 +22,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+<<<<<<< HEAD
 @DisplayName("GetAllUsersService")
+=======
+/**
+ * Test suite for GetAllUsersService.
+ * Verifies that the service correctly delegates to the persistence port.
+ */
+@DisplayName("GetAllUsersService Test Suite")
+>>>>>>> refactoring-clean-code
 @ExtendWith(MockitoExtension.class)
 class GetAllUsersServiceTest {
 
@@ -36,7 +44,11 @@ class GetAllUsersServiceTest {
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() returns users from output port")
+=======
+  @DisplayName("execute() should return the list of users provided by the port")
+>>>>>>> refactoring-clean-code
   void shouldReturnUsersFromPort() {
     // Arrange
     final UserModel user =
@@ -58,7 +70,11 @@ class GetAllUsersServiceTest {
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() returns empty list when there are no users")
+=======
+  @DisplayName("execute() should return an empty list when no users exist")
+>>>>>>> refactoring-clean-code
   void shouldReturnEmptyListWhenNoUsers() {
     // Arrange
     when(getAllUsersPort.getAll()).thenReturn(List.of());
@@ -67,8 +83,12 @@ class GetAllUsersServiceTest {
     final List<UserModel> result = service.execute();
 
     // Assert
+<<<<<<< HEAD
     assertNotNull(result);
     assertTrue(result.isEmpty());
+=======
+    assertTrue(result.isEmpty(), "Result should be an empty list, not null");
+>>>>>>> refactoring-clean-code
   }
 }
 

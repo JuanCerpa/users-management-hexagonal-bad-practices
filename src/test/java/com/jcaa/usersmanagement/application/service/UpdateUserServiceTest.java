@@ -73,7 +73,11 @@ class UpdateUserServiceTest {
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() updates user and sends notification when data is valid")
+=======
+  @DisplayName("execute() should update user and notify when input data is valid")
+>>>>>>> refactoring-clean-code
   void shouldUpdateUserAndNotifyWhenDataIsValid() {
     // Arrange
     final UpdateUserCommand command =
@@ -83,16 +87,26 @@ class UpdateUserServiceTest {
     when(updateUserPort.update(any())).thenReturn(existingUser);
 
     // Act
+<<<<<<< HEAD
     final UserModel result = service.execute(command);
 
     // Assert
     assertNotNull(result);
+=======
+    service.execute(command);
+
+    // Assert
+>>>>>>> refactoring-clean-code
     verify(updateUserPort).update(any(UserModel.class));
     verify(emailNotificationService).notifyUserUpdated(existingUser);
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() throws UserNotFoundException when user does not exist")
+=======
+  @DisplayName("execute() should throw UserNotFoundException when the user ID does not exist")
+>>>>>>> refactoring-clean-code
   void shouldThrowWhenUserNotFound() {
     // Arrange
     final UpdateUserCommand command =
@@ -105,7 +119,11 @@ class UpdateUserServiceTest {
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() throws UserAlreadyExistsException when email belongs to another user")
+=======
+  @DisplayName("execute() should throw UserAlreadyExistsException when the email is already used by another user")
+>>>>>>> refactoring-clean-code
   void shouldThrowWhenEmailBelongsToAnotherUser() {
     // Arrange
     final UpdateUserCommand command =
@@ -127,7 +145,11 @@ class UpdateUserServiceTest {
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() allows keeping same email for current user")
+=======
+  @DisplayName("execute() should allow the update if the email remains the same for the current user")
+>>>>>>> refactoring-clean-code
   void shouldAllowKeepingOwnEmail() {
     // Arrange
     final UpdateUserCommand command =

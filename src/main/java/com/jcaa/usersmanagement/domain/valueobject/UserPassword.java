@@ -6,8 +6,13 @@ import java.util.Objects;
 
 public final class UserPassword {
 
+<<<<<<< HEAD
   public static final int MINIMUM_LENGTH = 8;
   public static final int BCRYPT_COST = 12;
+=======
+  private static final int MINIMUM_LENGTH = 8;
+  private static final int BCRYPT_COST = 12;
+>>>>>>> refactoring-clean-code
 
   private final String value;
 

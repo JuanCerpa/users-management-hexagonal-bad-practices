@@ -31,7 +31,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("CreateUserService")
+// VIOLACIÓN Regla 11: se eliminó @DisplayName de la clase y de los métodos.
+// Los tests deben tener nombres descriptivos con @DisplayName para documentar el comportamiento.
 @ExtendWith(MockitoExtension.class)
 class CreateUserServiceTest {
 
@@ -54,7 +55,8 @@ class CreateUserServiceTest {
   }
 
   @Test
-  @DisplayName("execute() saves user and sends notification when email is unique")
+  // VIOLACIÓN Regla 11: no hay comentarios de estructura Arrange–Act–Assert.
+  // La regla exige que los bloques estén documentados con // Arrange, // Act, // Assert.
   void shouldSaveUserAndNotifyWhenEmailIsNew() {
     // Arrange
     final CreateUserCommand command =
@@ -72,16 +74,15 @@ class CreateUserServiceTest {
 
     // Act
     final UserModel result = service.execute(command);
-
-    // Assert
-    assertNotNull(result);
-    assertEquals("u-01", result.getId().value());
+    // VIOLACIÓN Regla 11: se usa assertTrue(x != null) en lugar de assertNotNull(x).
+    // La regla indica usar las últimas aserciones — assertNotNull es más expresivo y correcto.
+    assertTrue(result != null);
+    assertTrue(result.getId().value().equals("u-01"));
     verify(saveUserPort).save(any(UserModel.class));
     verify(emailNotificationService).notifyUserCreated(savedUser, "Pass1234");
   }
 
   @Test
-  @DisplayName("execute() throws UserAlreadyExistsException when email is already registered")
   void shouldThrowWhenEmailAlreadyExists() {
     // Arrange
     final CreateUserCommand command =
@@ -103,7 +104,6 @@ class CreateUserServiceTest {
   }
 
   @Test
-  @DisplayName("execute() throws ConstraintViolationException when command is invalid")
   void shouldThrowWhenCommandIsInvalid() {
     // Arrange
     final CreateUserCommand command =
