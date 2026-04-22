@@ -5,6 +5,11 @@ public record UserResponse(
     String name,
     String email,
     String role,
+<<<<<<< HEAD
     String status
 ) {}
 
+=======
+    String status) {
+}
+>>>>>>> refactoring-clean-code

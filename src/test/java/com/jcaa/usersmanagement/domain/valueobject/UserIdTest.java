@@ -9,32 +9,31 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-@DisplayName("UserId")
+// VIOLACIÓN Regla 11: se eliminó @DisplayName de la clase y de todos los métodos.
+// Los tests deben tener nombres descriptivos con @DisplayName para documentar el comportamiento.
 class UserIdTest {
 
   @ParameterizedTest
+  @DisplayName("Should create UserId with trimmed value")
   @ValueSource(strings = {" user123 ", "  user123  ", "user123\t"})
-  @DisplayName("constructor trims incoming value")
-  void shouldCreateUserIdWithTrimmedValue(final String input) {
-    // Act
+  void shouldCreateUserIdWithTrimmedValue(String input) {
+    // VIOLACIÓN Regla 11: se eliminaron los comentarios Arrange–Act–Assert.
+    final String correctUserId = "user123";
     final UserId userId = new UserId(input);
-
-    // Assert
-    assertEquals("user123", userId.toString());
+    // VIOLACIÓN Regla 11: se usa assertTrue(x.equals(y)) en lugar de assertEquals(x, y).
+    assertTrue(correctUserId.equals(userId.toString()));
   }
 
   @Test
-  @DisplayName("constructor throws NullPointerException when value is null")
   void shouldThrowNullPointerExceptionWhenUserIdIsNull() {
     // Act & Assert
     assertThrows(NullPointerException.class, () -> new UserId(null));
   }
 
   @ParameterizedTest
+  @DisplayName("Should throw InvalidUserIdException when UserId is empty or blank")
   @ValueSource(strings = {"", "   ", "\t", "\n", "\r", "\f", "\b"})
-  @DisplayName("constructor throws InvalidUserIdException when value is blank")
-  void shouldThrowInvalidUserIdExceptionWhenUserIdIsEmpty(final String input) {
-    // Act & Assert
+  void shouldThrowIllegalArgumentExceptionWhenUserIdIsEmpty(String input) {
     assertThrows(InvalidUserIdException.class, () -> new UserId(input));
   }
 }

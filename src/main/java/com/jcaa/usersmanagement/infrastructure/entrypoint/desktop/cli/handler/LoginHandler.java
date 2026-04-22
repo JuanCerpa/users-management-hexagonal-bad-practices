@@ -26,7 +26,11 @@ public final class LoginHandler implements OperationHandler {
       console.println("\n  Login successful. Welcome!");
       printer.print(user);
     } catch (final InvalidCredentialsException exception) {
+<<<<<<< HEAD
       log.warning("Intento de login fallido.");
+=======
+      log.warning("Intento de login fallido");
+>>>>>>> refactoring-clean-code
       console.println("  Error: " + exception.getMessage());
     }
   }

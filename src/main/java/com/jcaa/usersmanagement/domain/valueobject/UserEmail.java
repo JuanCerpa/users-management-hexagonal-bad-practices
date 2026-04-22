@@ -12,7 +12,10 @@ public record UserEmail(String value) {
   public UserEmail {
     final String normalizedValue =
         Objects.requireNonNull(value, "UserEmail cannot be null").trim().toLowerCase();
+<<<<<<< HEAD
     
+=======
+>>>>>>> refactoring-clean-code
     validateNotEmpty(normalizedValue);
     validateFormat(normalizedValue);
     value = normalizedValue;

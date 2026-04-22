@@ -46,10 +46,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Tests for UserController.
- *
- * <p>Covers: correct delegation to every use-case port, accurate DTO→command/query mapping,
- * accurate domain-model→response mapping, and transparent exception propagation. All ports are
- * mocked; no infrastructure is exercised.
  */
 @DisplayName("UserController")
 @ExtendWith(MockitoExtension.class)
@@ -253,14 +249,12 @@ class UserControllerTest {
     final UpdateUserRequest request =
         new UpdateUserRequest(
             "u-005", "Eve Martinez", "eve@example.com", "NewPass9!", "ADMIN", "ACTIVE");
-    final UserModel updatedUser =
-        buildUser("u-005", "Eve Martinez", "eve@example.com", UserRole.ADMIN, UserStatus.ACTIVE);
     final ArgumentCaptor<UpdateUserCommand> captor =
         ArgumentCaptor.forClass(UpdateUserCommand.class);
-    when(updateUserUseCase.execute(captor.capture())).thenReturn(updatedUser);
+    doNothing().when(updateUserUseCase).execute(captor.capture());
 
     // Act
-    final UserResponse result = controller.updateUser(request);
+    controller.updateUser(request);
 
     // Assert
     assertAll(
@@ -283,6 +277,7 @@ class UserControllerTest {
             assertEquals("ADMIN", captor.getValue().role(), "command role must match request role"),
         () ->
             assertEquals(
+<<<<<<< HEAD
                 "ACTIVE", captor.getValue().status(), "command status must match request status"),
         () ->
             assertEquals(
@@ -292,6 +287,9 @@ class UserControllerTest {
         () ->
             assertEquals(
                 "ADMIN", result.role(), "response role must reflect the domain model role"));
+=======
+                "ACTIVE", captor.getValue().status(), "command status must match request status"));
+>>>>>>> refactoring-clean-code
   }
 
   @Test
@@ -302,8 +300,9 @@ class UserControllerTest {
     final UpdateUserRequest request =
         new UpdateUserRequest(
             "u-999", "Ghost User", "ghost@example.com", "Pass9999!", "MEMBER", "INACTIVE");
-    when(updateUserUseCase.execute(any()))
-        .thenThrow(UserNotFoundException.becauseIdWasNotFound("u-999"));
+    doThrow(UserNotFoundException.becauseIdWasNotFound("u-999"))
+        .when(updateUserUseCase)
+        .execute(any());
 
     // Act & Assert
     assertThrows(

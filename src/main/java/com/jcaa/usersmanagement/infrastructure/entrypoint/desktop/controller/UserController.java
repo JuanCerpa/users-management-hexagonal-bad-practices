@@ -6,7 +6,10 @@ import com.jcaa.usersmanagement.application.port.in.GetAllUsersUseCase;
 import com.jcaa.usersmanagement.application.port.in.GetUserByIdUseCase;
 import com.jcaa.usersmanagement.application.port.in.LoginUseCase;
 import com.jcaa.usersmanagement.application.port.in.UpdateUserUseCase;
+<<<<<<< HEAD
 import com.jcaa.usersmanagement.domain.model.UserModel;
+=======
+>>>>>>> refactoring-clean-code
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.CreateUserRequest;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.LoginRequest;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.UpdateUserRequest;
@@ -27,7 +30,11 @@ public final class UserController {
   private final LoginUseCase loginUseCase;
 
   public List<UserResponse> listAllUsers() {
+<<<<<<< HEAD
     final List<UserModel> users = getAllUsersUseCase.execute();
+=======
+    final var users = getAllUsersUseCase.execute();
+>>>>>>> refactoring-clean-code
     return UserDesktopMapper.toResponseList(users);
   }
 
@@ -43,10 +50,9 @@ public final class UserController {
     return UserDesktopMapper.toResponse(user);
   }
 
-  public UserResponse updateUser(final UpdateUserRequest request) {
+  public void updateUser(final UpdateUserRequest request) {
     final var command = UserDesktopMapper.toUpdateCommand(request);
-    final var user = updateUserUseCase.execute(command);
-    return UserDesktopMapper.toResponse(user);
+    updateUserUseCase.execute(command);
   }
 
   public void deleteUser(final String id) {

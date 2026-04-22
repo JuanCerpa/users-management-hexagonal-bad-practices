@@ -29,6 +29,7 @@ public final class EmailNotificationService {
   private final EmailSenderPort emailSenderPort;
 
   public void notifyUserCreated(final UserModel user, final String plainPassword) {
+<<<<<<< HEAD
     final Map<String, String> tokens = Map.of(
         TOKEN_NAME, user.getName().value(),
         TOKEN_EMAIL, user.getEmail().value(),
@@ -61,12 +62,47 @@ public final class EmailNotificationService {
     final EmailDestinationModel destination = buildDestination(user, subject, body);
     
     sendEmail(destination);
+=======
+    final String template = loadTemplate("user-created.html");
+    final String content = renderCreatedTemplate(user, plainPassword, template);
+    send(user, SUBJECT_CREATED, content);
+  }
+
+  public void notifyUserUpdated(final UserModel user) {
+    final String template = loadTemplate("user-updated.html");
+    final String content = renderUpdatedTemplate(user, template);
+    send(user, SUBJECT_UPDATED, content);
+  }
+
+  private String renderCreatedTemplate(final UserModel user, final String pass, final String template) {
+    return renderTemplate(template, Map.of(
+        TOKEN_NAME, user.nameValue(),
+        TOKEN_EMAIL, user.emailValue(),
+        TOKEN_PASSWORD, pass,
+        TOKEN_ROLE, user.roleName()
+    ));
+  }
+
+  private String renderUpdatedTemplate(final UserModel user, final String template) {
+    return renderTemplate(template, Map.of(
+        TOKEN_NAME, user.nameValue(),
+        TOKEN_EMAIL, user.emailValue(),
+        TOKEN_ROLE, user.roleName(),
+        TOKEN_STATUS, user.statusName()
+    ));
+  }
+
+  private void send(final UserModel user, final String subject, final String body) {
+    final EmailDestinationModel destination = buildDestination(user, subject, body);
+    emailSenderPort.send(destination);
+    log.info(String.format("Notification email sent to: %s", user.emailValue()));
+>>>>>>> refactoring-clean-code
   }
 
   private static EmailDestinationModel buildDestination(
       final UserModel user, final String subject, final String body) {
     return new EmailDestinationModel(
-        user.getEmail().value(), user.getName().value(), subject, body);
+        user.emailValue(), user.nameValue(), subject, body);
   }
 
   private String loadTemplate(final String templateName) {
@@ -94,6 +130,7 @@ public final class EmailNotificationService {
     }
     return result;
   }
+<<<<<<< HEAD
 
   private void sendEmail(final EmailDestinationModel destination) {
     try {
@@ -103,5 +140,7 @@ public final class EmailNotificationService {
       throw senderException;
     }
   }
+=======
+>>>>>>> refactoring-clean-code
 }
 

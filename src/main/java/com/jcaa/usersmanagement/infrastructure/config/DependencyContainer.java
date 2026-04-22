@@ -46,7 +46,12 @@ public final class DependencyContainer {
     final Connection connection = buildDatabaseConnection(properties);
     final UserRepositoryMySQL userRepository = new UserRepositoryMySQL(connection);
 
+<<<<<<< HEAD
     final JavaMailEmailSenderAdapter emailSender = new JavaMailEmailSenderAdapter(buildSmtpConfig(properties));
+=======
+    final JavaMailEmailSenderAdapter emailSender =
+        new JavaMailEmailSenderAdapter(buildSmtpConfig(properties));
+>>>>>>> refactoring-clean-code
     final EmailNotificationService emailNotification = new EmailNotificationService(emailSender);
 
     // Construir Validator para las validaciones en la capa de aplicación
@@ -83,7 +88,10 @@ public final class DependencyContainer {
             properties.get(DB_USER),
             properties.get(DB_PASSWORD));
     return DatabaseConnectionFactory.createConnection(config);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refactoring-clean-code
   }
 
   private static SmtpConfig buildSmtpConfig(final AppProperties properties) {

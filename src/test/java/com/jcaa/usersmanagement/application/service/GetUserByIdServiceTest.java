@@ -44,7 +44,11 @@ class GetUserByIdServiceTest {
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() returns user when id exists")
+=======
+  @DisplayName("execute() should return the user when the provided ID exists")
+>>>>>>> refactoring-clean-code
   void shouldReturnUserWhenFound() {
     // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("u-001");
@@ -67,7 +71,11 @@ class GetUserByIdServiceTest {
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() throws UserNotFoundException when id does not exist")
+=======
+  @DisplayName("execute() should throw UserNotFoundException when the provided ID does not exist")
+>>>>>>> refactoring-clean-code
   void shouldThrowWhenUserNotFound() {
     // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("no-existe");
@@ -78,7 +86,11 @@ class GetUserByIdServiceTest {
   }
 
   @Test
+<<<<<<< HEAD
   @DisplayName("execute() throws ConstraintViolationException when id is blank")
+=======
+  @DisplayName("execute() should throw ConstraintViolationException when the provided ID is blank")
+>>>>>>> refactoring-clean-code
   void shouldThrowWhenQueryIsInvalid() {
     // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("");

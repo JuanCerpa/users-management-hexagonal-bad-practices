@@ -23,12 +23,21 @@ public final class AppProperties {
   }
 
   private static Properties doLoad(final InputStream stream) {
+<<<<<<< HEAD
     final InputStream nonNullStream =
         Objects.requireNonNull(stream, String.format(FILE_NOT_FOUND_MESSAGE, PROPERTIES_FILE));
 
     final Properties loadedProperties = new Properties();
     try (nonNullStream) {
       loadedProperties.load(nonNullStream);
+=======
+    if (Objects.isNull(stream)) {
+      throw new NullPointerException("File not found in classpath: " + PROPERTIES_FILE);
+    }
+    final Properties loadedProperties = new Properties();
+    try (stream) {
+      loadedProperties.load(stream);
+>>>>>>> refactoring-clean-code
     } catch (final IOException exception) {
       throw ConfigurationException.becauseLoadFailed(exception);
     }
@@ -37,8 +46,15 @@ public final class AppProperties {
 
   public String get(final String key) {
     final String value = properties.getProperty(key);
+<<<<<<< HEAD
     return Objects.requireNonNull(
         value, String.format(PROPERTY_NOT_FOUND_MESSAGE, PROPERTIES_FILE, key));
+=======
+    if (Objects.isNull(value)) {
+      throw new NullPointerException("Property not found in " + PROPERTIES_FILE + ": " + key);
+    }
+    return value;
+>>>>>>> refactoring-clean-code
   }
 
   public int getInt(final String key) {
