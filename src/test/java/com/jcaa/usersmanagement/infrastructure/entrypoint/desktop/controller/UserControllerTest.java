@@ -46,10 +46,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Tests for UserController.
- *
- * <p>Covers: correct delegation to every use-case port, accurate DTO→command/query mapping,
- * accurate domain-model→response mapping, and transparent exception propagation. All ports are
- * mocked; no infrastructure is exercised.
  */
 @DisplayName("UserController")
 @ExtendWith(MockitoExtension.class)
@@ -114,11 +110,11 @@ class UserControllerTest {
     assertAll(
         "single-user list mapping",
         () -> assertEquals(1, result.size(), "list must contain exactly one element"),
-        () -> assertEquals("u-001", result.get(0).getId(), "id must match"),
-        () -> assertEquals("Alice Smith", result.get(0).getName(), "name must match"),
-        () -> assertEquals("alice@example.com", result.get(0).getEmail(), "email must match"),
-        () -> assertEquals("ADMIN", result.get(0).getRole(), "role must match enum name"),
-        () -> assertEquals("ACTIVE", result.get(0).getStatus(), "status must match enum name"));
+        () -> assertEquals("u-001", result.get(0).id(), "id must match"),
+        () -> assertEquals("Alice Smith", result.get(0).name(), "name must match"),
+        () -> assertEquals("alice@example.com", result.get(0).email(), "email must match"),
+        () -> assertEquals("ADMIN", result.get(0).role(), "role must match enum name"),
+        () -> assertEquals("ACTIVE", result.get(0).status(), "status must match enum name"));
     verify(getAllUsersUseCase).execute();
   }
 
@@ -153,11 +149,11 @@ class UserControllerTest {
     // Assert
     assertAll(
         "findUserById response mapping",
-        () -> assertEquals("u-002", result.getId(), "id must match"),
-        () -> assertEquals("Bob Jones", result.getName(), "name must match"),
-        () -> assertEquals("bob@example.com", result.getEmail(), "email must match"),
-        () -> assertEquals("MEMBER", result.getRole(), "role must match enum name"),
-        () -> assertEquals("ACTIVE", result.getStatus(), "status must match enum name"));
+        () -> assertEquals("u-002", result.id(), "id must match"),
+        () -> assertEquals("Bob Jones", result.name(), "name must match"),
+        () -> assertEquals("bob@example.com", result.email(), "email must match"),
+        () -> assertEquals("MEMBER", result.role(), "role must match enum name"),
+        () -> assertEquals("ACTIVE", result.status(), "status must match enum name"));
   }
 
   @Test
@@ -217,12 +213,12 @@ class UserControllerTest {
         () ->
             assertEquals(
                 "u-003",
-                result.getId(),
+                result.id(),
                 "response id must come from the domain model returned by use case"),
         () ->
             assertEquals(
                 "PENDING",
-                result.getStatus(),
+                result.status(),
                 "response status must reflect the domain model status"));
   }
 
@@ -253,14 +249,12 @@ class UserControllerTest {
     final UpdateUserRequest request =
         new UpdateUserRequest(
             "u-005", "Eve Martinez", "eve@example.com", "NewPass9!", "ADMIN", "ACTIVE");
-    final UserModel updatedUser =
-        buildUser("u-005", "Eve Martinez", "eve@example.com", UserRole.ADMIN, UserStatus.ACTIVE);
     final ArgumentCaptor<UpdateUserCommand> captor =
         ArgumentCaptor.forClass(UpdateUserCommand.class);
-    when(updateUserUseCase.execute(captor.capture())).thenReturn(updatedUser);
+    doNothing().when(updateUserUseCase).execute(captor.capture());
 
     // Act
-    final UserResponse result = controller.updateUser(request);
+    controller.updateUser(request);
 
     // Assert
     assertAll(
@@ -283,15 +277,7 @@ class UserControllerTest {
             assertEquals("ADMIN", captor.getValue().role(), "command role must match request role"),
         () ->
             assertEquals(
-                "ACTIVE", captor.getValue().status(), "command status must match request status"),
-        () ->
-            assertEquals(
-                "u-005",
-                result.getId(),
-                "response id must come from the domain model returned by use case"),
-        () ->
-            assertEquals(
-                "ADMIN", result.getRole(), "response role must reflect the domain model role"));
+                "ACTIVE", captor.getValue().status(), "command status must match request status"));
   }
 
   @Test
@@ -302,8 +288,9 @@ class UserControllerTest {
     final UpdateUserRequest request =
         new UpdateUserRequest(
             "u-999", "Ghost User", "ghost@example.com", "Pass9999!", "MEMBER", "INACTIVE");
-    when(updateUserUseCase.execute(any()))
-        .thenThrow(UserNotFoundException.becauseIdWasNotFound("u-999"));
+    doThrow(UserNotFoundException.becauseIdWasNotFound("u-999"))
+        .when(updateUserUseCase)
+        .execute(any());
 
     // Act & Assert
     assertThrows(
@@ -366,9 +353,9 @@ class UserControllerTest {
         "login command delegation and response mapping",
         () -> assertEquals("frank@example.com", captor.getValue().email()),
         () -> assertEquals("Pass1234!",         captor.getValue().password()),
-        () -> assertEquals("u-007",             result.getId()),
-        () -> assertEquals("frank@example.com", result.getEmail()),
-        () -> assertEquals("ACTIVE",            result.getStatus()));
+        () -> assertEquals("u-007",             result.id()),
+        () -> assertEquals("frank@example.com", result.email()),
+        () -> assertEquals("ACTIVE",            result.status()));
   }
 
   @Test
