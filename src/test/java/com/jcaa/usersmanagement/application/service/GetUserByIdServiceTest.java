@@ -1,11 +1,8 @@
 package com.jcaa.usersmanagement.application.service;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.jcaa.usersmanagement.application.port.out.GetUserByIdPort;
 import com.jcaa.usersmanagement.application.service.dto.query.GetUserByIdQuery;
@@ -28,6 +25,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * Tests para GetUserByIdService.
+ *
+ * <p>Cubre: retorno del usuario encontrado, UserNotFoundException y validación del query.
+ */
 @DisplayName("GetUserByIdService")
 @ExtendWith(MockitoExtension.class)
 class GetUserByIdServiceTest {
@@ -43,12 +45,10 @@ class GetUserByIdServiceTest {
     }
   }
 
+  // ── flujo feliz
+
   @Test
-<<<<<<< HEAD
-  @DisplayName("execute() returns user when id exists")
-=======
   @DisplayName("execute() should return the user when the provided ID exists")
->>>>>>> refactoring-clean-code
   void shouldReturnUserWhenFound() {
     // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("u-001");
@@ -71,11 +71,7 @@ class GetUserByIdServiceTest {
   }
 
   @Test
-<<<<<<< HEAD
-  @DisplayName("execute() throws UserNotFoundException when id does not exist")
-=======
   @DisplayName("execute() should throw UserNotFoundException when the provided ID does not exist")
->>>>>>> refactoring-clean-code
   void shouldThrowWhenUserNotFound() {
     // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("no-existe");
@@ -86,11 +82,7 @@ class GetUserByIdServiceTest {
   }
 
   @Test
-<<<<<<< HEAD
-  @DisplayName("execute() throws ConstraintViolationException when id is blank")
-=======
   @DisplayName("execute() should throw ConstraintViolationException when the provided ID is blank")
->>>>>>> refactoring-clean-code
   void shouldThrowWhenQueryIsInvalid() {
     // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("");
@@ -100,4 +92,3 @@ class GetUserByIdServiceTest {
     verifyNoInteractions(getUserByIdPort);
   }
 }
-

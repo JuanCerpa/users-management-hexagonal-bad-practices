@@ -9,6 +9,7 @@ public record UserId(String value) {
     Objects.requireNonNull(value, "UserId cannot be null");
     final String normalizedValue = value.trim();
     validateNotEmpty(normalizedValue);
+    // asigna el valor normalizado al componente
     value = normalizedValue;
   }
 

@@ -18,7 +18,8 @@ import java.util.Map;
 public final class EmailNotificationService {
 
   private static final String SUBJECT_CREATED = "Tu cuenta ha sido creada — Gestión de Usuarios";
-  private static final String SUBJECT_UPDATED = "Tu cuenta ha sido actualizada — Gestión de Usuarios";
+  private static final String SUBJECT_UPDATED =
+      "Tu cuenta ha sido actualizada — Gestión de Usuarios";
 
   private static final String TOKEN_NAME     = "name";
   private static final String TOKEN_EMAIL    = "email";
@@ -29,40 +30,6 @@ public final class EmailNotificationService {
   private final EmailSenderPort emailSenderPort;
 
   public void notifyUserCreated(final UserModel user, final String plainPassword) {
-<<<<<<< HEAD
-    final Map<String, String> tokens = Map.of(
-        TOKEN_NAME, user.getName().value(),
-        TOKEN_EMAIL, user.getEmail().value(),
-        TOKEN_PASSWORD, plainPassword,
-        TOKEN_ROLE, user.getRole().name()
-    );
-
-    sendNotification(user, SUBJECT_CREATED, "user-created.html", tokens);
-  }
-
-  public void notifyUserUpdated(final UserModel user) {
-    final Map<String, String> tokens = Map.of(
-        TOKEN_NAME, user.getName().value(),
-        TOKEN_EMAIL, user.getEmail().value(),
-        TOKEN_ROLE, user.getRole().name(),
-        TOKEN_STATUS, user.getStatus().name()
-    );
-
-    sendNotification(user, SUBJECT_UPDATED, "user-updated.html", tokens);
-  }
-
-  private void sendNotification(
-      final UserModel user,
-      final String subject,
-      final String templateName,
-      final Map<String, String> tokens) {
-    
-    final String template = loadTemplate(templateName);
-    final String body = renderTemplate(template, tokens);
-    final EmailDestinationModel destination = buildDestination(user, subject, body);
-    
-    sendEmail(destination);
-=======
     final String template = loadTemplate("user-created.html");
     final String content = renderCreatedTemplate(user, plainPassword, template);
     send(user, SUBJECT_CREATED, content);
@@ -96,7 +63,6 @@ public final class EmailNotificationService {
     final EmailDestinationModel destination = buildDestination(user, subject, body);
     emailSenderPort.send(destination);
     log.info(String.format("Notification email sent to: %s", user.emailValue()));
->>>>>>> refactoring-clean-code
   }
 
   private static EmailDestinationModel buildDestination(
@@ -130,17 +96,4 @@ public final class EmailNotificationService {
     }
     return result;
   }
-<<<<<<< HEAD
-
-  private void sendEmail(final EmailDestinationModel destination) {
-    try {
-      emailSenderPort.send(destination);
-    } catch (final EmailSenderException senderException) {
-      log.warning("No se pudo enviar correo de notificación.");
-      throw senderException;
-    }
-  }
-=======
->>>>>>> refactoring-clean-code
 }
-

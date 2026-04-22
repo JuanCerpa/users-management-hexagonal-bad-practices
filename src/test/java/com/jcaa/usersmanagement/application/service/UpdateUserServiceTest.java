@@ -1,13 +1,8 @@
 package com.jcaa.usersmanagement.application.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.jcaa.usersmanagement.application.port.out.GetUserByEmailPort;
 import com.jcaa.usersmanagement.application.port.out.GetUserByIdPort;
@@ -33,6 +28,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * Tests para UpdateUserService.
+ *
+ * <p>Cubre: flujo feliz, usuario no encontrado, email tomado por otro usuario, email del mismo
+ * usuario (no debe fallar) y validación del command.
+ */
 @DisplayName("UpdateUserService")
 @ExtendWith(MockitoExtension.class)
 class UpdateUserServiceTest {
@@ -72,12 +73,10 @@ class UpdateUserServiceTest {
             UserStatus.ACTIVE);
   }
 
+  // ── flujo feliz
+
   @Test
-<<<<<<< HEAD
-  @DisplayName("execute() updates user and sends notification when data is valid")
-=======
   @DisplayName("execute() should update user and notify when input data is valid")
->>>>>>> refactoring-clean-code
   void shouldUpdateUserAndNotifyWhenDataIsValid() {
     // Arrange
     final UpdateUserCommand command =
@@ -87,26 +86,15 @@ class UpdateUserServiceTest {
     when(updateUserPort.update(any())).thenReturn(existingUser);
 
     // Act
-<<<<<<< HEAD
-    final UserModel result = service.execute(command);
-
-    // Assert
-    assertNotNull(result);
-=======
     service.execute(command);
 
     // Assert
->>>>>>> refactoring-clean-code
     verify(updateUserPort).update(any(UserModel.class));
     verify(emailNotificationService).notifyUserUpdated(existingUser);
   }
 
   @Test
-<<<<<<< HEAD
-  @DisplayName("execute() throws UserNotFoundException when user does not exist")
-=======
   @DisplayName("execute() should throw UserNotFoundException when the user ID does not exist")
->>>>>>> refactoring-clean-code
   void shouldThrowWhenUserNotFound() {
     // Arrange
     final UpdateUserCommand command =
@@ -118,16 +106,15 @@ class UpdateUserServiceTest {
     verify(updateUserPort, never()).update(any());
   }
 
+  // ── email tomado por otro usuario
+
   @Test
-<<<<<<< HEAD
-  @DisplayName("execute() throws UserAlreadyExistsException when email belongs to another user")
-=======
   @DisplayName("execute() should throw UserAlreadyExistsException when the email is already used by another user")
->>>>>>> refactoring-clean-code
   void shouldThrowWhenEmailBelongsToAnotherUser() {
     // Arrange
     final UpdateUserCommand command =
         new UpdateUserCommand(ID, "John", "other@example.com", null, "MEMBER", "ACTIVE");
+
     final UserModel otherUser =
         new UserModel(
             new UserId("u-999"),
@@ -136,6 +123,7 @@ class UpdateUserServiceTest {
             UserPassword.fromHash(HASH),
             UserRole.MEMBER,
             UserStatus.ACTIVE);
+
     when(getUserByIdPort.getById(any())).thenReturn(Optional.of(existingUser));
     when(getUserByEmailPort.getByEmail(any())).thenReturn(Optional.of(otherUser));
 
@@ -144,16 +132,15 @@ class UpdateUserServiceTest {
     verify(updateUserPort, never()).update(any());
   }
 
+  // ── email del mismo usuario: no debe lanzar excepción
+
   @Test
-<<<<<<< HEAD
-  @DisplayName("execute() allows keeping same email for current user")
-=======
   @DisplayName("execute() should allow the update if the email remains the same for the current user")
->>>>>>> refactoring-clean-code
   void shouldAllowKeepingOwnEmail() {
     // Arrange
     final UpdateUserCommand command =
         new UpdateUserCommand(ID, "John Updated", EMAIL, null, "ADMIN", "ACTIVE");
+
     when(getUserByIdPort.getById(any())).thenReturn(Optional.of(existingUser));
     when(getUserByEmailPort.getByEmail(any())).thenReturn(Optional.of(existingUser));
     when(updateUserPort.update(any())).thenReturn(existingUser);
@@ -163,10 +150,13 @@ class UpdateUserServiceTest {
     verify(updateUserPort).update(any());
   }
 
+  // ── validación del command
+
   @Test
-  @DisplayName("execute() throws ConstraintViolationException when command is invalid")
+  @DisplayName(
+      "execute() lanza ConstraintViolationException cuando el command tiene campos inválidos")
   void shouldThrowWhenCommandIsInvalid() {
-    // Arrange
+    // Arrange — id en blanco y email inválido
     final UpdateUserCommand command =
         new UpdateUserCommand("", "Jo", "no-es-email", null, "MEMBER", "ACTIVE");
 
@@ -175,4 +165,3 @@ class UpdateUserServiceTest {
     verifyNoInteractions(updateUserPort, getUserByIdPort, getUserByEmailPort);
   }
 }
-

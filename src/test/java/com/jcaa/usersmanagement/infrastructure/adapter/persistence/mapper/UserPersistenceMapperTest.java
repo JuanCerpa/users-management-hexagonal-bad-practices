@@ -23,13 +23,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-<<<<<<< HEAD
-=======
 /**
  * Tests for UserPersistenceMapper.
  * Covers mapping between domain model, entity, DTO and ResultSet.
  */
->>>>>>> refactoring-clean-code
 @DisplayName("UserPersistenceMapper")
 @ExtendWith(MockitoExtension.class)
 class UserPersistenceMapperTest {

@@ -1,11 +1,8 @@
 package com.jcaa.usersmanagement.application.service;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.jcaa.usersmanagement.application.port.out.GetUserByEmailPort;
 import com.jcaa.usersmanagement.application.service.dto.command.LoginCommand;
@@ -47,11 +44,7 @@ class LoginServiceTest {
   }
 
   @Test
-<<<<<<< HEAD
-  @DisplayName("execute() returns user when credentials are valid and user is ACTIVE")
-=======
   @DisplayName("execute() should return the user when credentials are valid and account is active")
->>>>>>> refactoring-clean-code
   void shouldReturnUserWhenCredentialsAreValidAndUserIsActive() {
     // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, PASSWORD);
@@ -73,15 +66,10 @@ class LoginServiceTest {
     assertSame(activeUser, result);
   }
 
-<<<<<<< HEAD
-  @Test
-  @DisplayName("execute() throws InvalidCredentialsException when email does not exist")
-=======
   // ── email no registrado
 
   @Test
   @DisplayName("execute() should throw InvalidCredentialsException when email does not exist")
->>>>>>> refactoring-clean-code
   void shouldThrowWhenEmailNotFound() {
     // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, PASSWORD);
@@ -92,11 +80,7 @@ class LoginServiceTest {
   }
 
   @Test
-<<<<<<< HEAD
-  @DisplayName("execute() throws InvalidCredentialsException when password is invalid")
-=======
   @DisplayName("execute() should throw InvalidCredentialsException when password does not match")
->>>>>>> refactoring-clean-code
   void shouldThrowWhenPasswordIsWrong() {
     // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, "WrongPass99");
@@ -115,11 +99,7 @@ class LoginServiceTest {
   }
 
   @Test
-<<<<<<< HEAD
-  @DisplayName("execute() throws InvalidCredentialsException when user status is not ACTIVE")
-=======
   @DisplayName("execute() should throw InvalidCredentialsException when user status is not ACTIVE")
->>>>>>> refactoring-clean-code
   void shouldThrowWhenUserIsNotActive() {
     // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, PASSWORD);
@@ -138,7 +118,7 @@ class LoginServiceTest {
   }
 
   @Test
-  @DisplayName("execute() throws ConstraintViolationException when command is invalid")
+  @DisplayName("execute() lanza ConstraintViolationException cuando el command tiene campos inválidos")
   void shouldThrowWhenCommandIsInvalid() {
     // Arrange
     final LoginCommand command = new LoginCommand("no-es-email", "short");
@@ -148,4 +128,3 @@ class LoginServiceTest {
     verifyNoInteractions(getUserByEmailPort);
   }
 }
-

@@ -46,33 +46,31 @@ public final class DependencyContainer {
     final Connection connection = buildDatabaseConnection(properties);
     final UserRepositoryMySQL userRepository = new UserRepositoryMySQL(connection);
 
-<<<<<<< HEAD
-    final JavaMailEmailSenderAdapter emailSender = new JavaMailEmailSenderAdapter(buildSmtpConfig(properties));
-=======
     final JavaMailEmailSenderAdapter emailSender =
         new JavaMailEmailSenderAdapter(buildSmtpConfig(properties));
->>>>>>> refactoring-clean-code
     final EmailNotificationService emailNotification = new EmailNotificationService(emailSender);
 
     // Construir Validator para las validaciones en la capa de aplicación
     final Validator validator = ValidatorProvider.buildValidator();
 
-    final CreateUserUseCase createUserUseCase = new CreateUserService(userRepository, userRepository, emailNotification,
-        validator);
-    final UpdateUserUseCase updateUserUseCase = new UpdateUserService(userRepository, userRepository, userRepository,
-        emailNotification, validator);
-    final DeleteUserUseCase deleteUserUseCase = new DeleteUserService(userRepository, userRepository, validator);
+    final CreateUserUseCase createUserUseCase =
+        new CreateUserService(userRepository, userRepository, emailNotification, validator);
+    final UpdateUserUseCase updateUserUseCase =
+        new UpdateUserService(userRepository, userRepository, userRepository, emailNotification, validator);
+    final DeleteUserUseCase deleteUserUseCase =
+        new DeleteUserService(userRepository, userRepository, validator);
     final GetUserByIdUseCase getUserByIdUseCase = new GetUserByIdService(userRepository, validator);
     final GetAllUsersUseCase getAllUsersUseCase = new GetAllUsersService(userRepository);
     final LoginUseCase loginUseCase = new LoginService(userRepository, validator);
 
-    this.userController = new UserController(
-        createUserUseCase,
-        updateUserUseCase,
-        deleteUserUseCase,
-        getUserByIdUseCase,
-        getAllUsersUseCase,
-        loginUseCase);
+    this.userController =
+        new UserController(
+            createUserUseCase,
+            updateUserUseCase,
+            deleteUserUseCase,
+            getUserByIdUseCase,
+            getAllUsersUseCase,
+            loginUseCase);
   }
 
   public UserController userController() {
@@ -88,10 +86,6 @@ public final class DependencyContainer {
             properties.get(DB_USER),
             properties.get(DB_PASSWORD));
     return DatabaseConnectionFactory.createConnection(config);
-<<<<<<< HEAD
-
-=======
->>>>>>> refactoring-clean-code
   }
 
   private static SmtpConfig buildSmtpConfig(final AppProperties properties) {

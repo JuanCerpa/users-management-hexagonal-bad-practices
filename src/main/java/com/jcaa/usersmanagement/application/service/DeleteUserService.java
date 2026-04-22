@@ -30,10 +30,7 @@ public final class DeleteUserService implements DeleteUserUseCase {
     final UserId userId = UserApplicationMapper.fromDeleteCommandToUserId(command);
     ensureUserExists(userId);
     deleteUserPort.delete(userId);
-<<<<<<< HEAD
-=======
     log.info(String.format("User deleted: %s", userId.value()));
->>>>>>> refactoring-clean-code
   }
 
   private void validateCommand(final DeleteUserCommand command) {
