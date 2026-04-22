@@ -1,6 +1,5 @@
 package com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli;
 
-import com.jcaa.usersmanagement.infrastructure.entrypoint.ApplicationEntryPoint;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.handler.CreateUserHandler;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.handler.DeleteUserHandler;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.handler.FindUserByIdHandler;
@@ -18,7 +17,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public final class UserManagementCli implements ApplicationEntryPoint {
+public final class UserManagementCli {
 
   private static final String BANNER =
       """

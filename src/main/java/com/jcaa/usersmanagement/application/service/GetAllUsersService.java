@@ -5,7 +5,6 @@ import com.jcaa.usersmanagement.application.port.out.GetAllUsersPort;
 import com.jcaa.usersmanagement.domain.model.UserModel;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -16,12 +15,6 @@ public final class GetAllUsersService implements GetAllUsersUseCase {
   @Override
   public List<UserModel> execute() {
     final List<UserModel> users = getAllUsersPort.getAll();
-<<<<<<< HEAD
-    if (users.isEmpty()) {
-      return Collections.emptyList();
-    }
-=======
->>>>>>> refactoring-clean-code
     return users;
   }
 }

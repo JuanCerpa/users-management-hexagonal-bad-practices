@@ -5,11 +5,7 @@ import java.util.Objects;
 
 public record UserName(String value) {
 
-<<<<<<< HEAD
-  public static final int MINIMUM_LENGTH = 3;
-=======
   private static final int MINIMUM_LENGTH = 3;
->>>>>>> refactoring-clean-code
 
   public UserName {
     Objects.requireNonNull(value, "UserName cannot be null");

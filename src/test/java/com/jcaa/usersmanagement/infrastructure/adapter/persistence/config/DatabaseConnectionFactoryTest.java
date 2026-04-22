@@ -16,13 +16,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-<<<<<<< HEAD
-=======
 /**
  * Tests for DatabaseConnectionFactory.
  * Covers successful connection and error handling.
  */
->>>>>>> refactoring-clean-code
 @DisplayName("DatabaseConnectionFactory")
 @ExtendWith(MockitoExtension.class)
 class DatabaseConnectionFactoryTest {

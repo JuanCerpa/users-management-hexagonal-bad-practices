@@ -5,12 +5,7 @@ import com.jcaa.usersmanagement.domain.exception.EmailSenderException;
 import com.jcaa.usersmanagement.domain.model.EmailDestinationModel;
 import lombok.extern.java.Log;
 
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
@@ -26,7 +21,7 @@ public final class JavaMailEmailSenderAdapter implements EmailSenderPort {
   private static final String MAIL_SMTP_STARTTLS = "mail.smtp.starttls.enable";
   private static final String CONTENT_TYPE_HTML = "text/html; charset=UTF-8";
   private static final String CHARSET_UTF8 = "UTF-8";
-  private static final String SENDER_EMAIL_LOG = "Correo enviado exitosamente.";
+  private static final String SENDER_EMAIL_LOG = "Correo enviado exitosamente a: {0}";
 
   private final Session mailSession;
   private final String fromAddress;
@@ -43,7 +38,7 @@ public final class JavaMailEmailSenderAdapter implements EmailSenderPort {
     try {
       final MimeMessage message = buildMessage(destination);
       Transport.send(message);
-      log.log(Level.INFO, SENDER_EMAIL_LOG);
+      log.log(Level.INFO, SENDER_EMAIL_LOG, destination.getDestinationEmail());
     } catch (final MessagingException | UnsupportedEncodingException exception) {
       throw EmailSenderException.becauseSmtpFailed(
           destination.getDestinationEmail(), exception.getMessage());

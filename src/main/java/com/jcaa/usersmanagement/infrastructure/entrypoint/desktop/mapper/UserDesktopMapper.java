@@ -12,18 +12,11 @@ import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.UpdateUser
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.UserResponse;
 
 import java.util.List;
-import java.util.Objects;
-import lombok.experimental.UtilityClass;
 
-<<<<<<< HEAD
-@UtilityClass
-public class UserDesktopMapper {
-=======
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class UserDesktopMapper {
->>>>>>> refactoring-clean-code
 
   public static CreateUserCommand toCreateCommand(final CreateUserRequest request) {
     return new CreateUserCommand(
@@ -67,7 +60,7 @@ public final class UserDesktopMapper {
   }
 
   private static void requireValidId(final String id) {
-    if (Objects.isNull(id) || id.isBlank()) {
+    if (id == null || id.isBlank()) {
       throw new IllegalArgumentException("ID inválido");
     }
   }

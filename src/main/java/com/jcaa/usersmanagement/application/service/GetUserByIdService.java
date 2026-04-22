@@ -23,6 +23,7 @@ public final class GetUserByIdService implements GetUserByIdUseCase {
   @Override
   public UserModel execute(final GetUserByIdQuery query) {
     validateQuery(query);
+
     final UserId userId = UserApplicationMapper.fromGetUserByIdQueryToUserId(query);
     return getUserByIdPort
         .getById(userId)
@@ -35,6 +36,4 @@ public final class GetUserByIdService implements GetUserByIdUseCase {
       throw new ConstraintViolationException(violations);
     }
   }
-
 }
-

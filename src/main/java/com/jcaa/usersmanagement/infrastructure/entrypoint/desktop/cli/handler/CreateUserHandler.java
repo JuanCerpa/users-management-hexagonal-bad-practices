@@ -7,10 +7,7 @@ import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.controller.Use
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.CreateUserRequest;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
-<<<<<<< HEAD
-=======
 import lombok.extern.java.Log;
->>>>>>> refactoring-clean-code
 
 @Log
 @RequiredArgsConstructor
@@ -33,10 +30,7 @@ public final class CreateUserHandler implements OperationHandler {
       console.println("\n  User created successfully.");
       printer.print(created);
     } catch (final UserAlreadyExistsException exception) {
-<<<<<<< HEAD
-=======
       log.warning("Intento de creación de usuario fallido: el usuario ya existe.");
->>>>>>> refactoring-clean-code
       console.println("  Error: " + exception.getMessage());
     }
   }

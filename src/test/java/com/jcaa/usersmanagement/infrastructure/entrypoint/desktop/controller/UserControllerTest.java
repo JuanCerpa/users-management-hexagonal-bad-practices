@@ -277,19 +277,7 @@ class UserControllerTest {
             assertEquals("ADMIN", captor.getValue().role(), "command role must match request role"),
         () ->
             assertEquals(
-<<<<<<< HEAD
-                "ACTIVE", captor.getValue().status(), "command status must match request status"),
-        () ->
-            assertEquals(
-                "u-005",
-                result.id(),
-                "response id must come from the domain model returned by use case"),
-        () ->
-            assertEquals(
-                "ADMIN", result.role(), "response role must reflect the domain model role"));
-=======
                 "ACTIVE", captor.getValue().status(), "command status must match request status"));
->>>>>>> refactoring-clean-code
   }
 
   @Test

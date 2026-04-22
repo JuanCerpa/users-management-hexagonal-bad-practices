@@ -1,17 +1,13 @@
 package com.jcaa.usersmanagement.infrastructure.adapter.persistence.config;
 
 import com.jcaa.usersmanagement.infrastructure.adapter.persistence.exception.PersistenceException;
-import lombok.experimental.UtilityClass;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-<<<<<<< HEAD
-=======
 import lombok.experimental.UtilityClass;
 
->>>>>>> refactoring-clean-code
 @UtilityClass
 public class DatabaseConnectionFactory {
 
