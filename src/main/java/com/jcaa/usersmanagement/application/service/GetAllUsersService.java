@@ -7,14 +7,16 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 public final class GetAllUsersService implements GetAllUsersUseCase {
 
   private final GetAllUsersPort getAllUsersPort;
 
+  public GetAllUsersService(GetAllUsersPort getAllUsersPort) {
+    this.getAllUsersPort = getAllUsersPort;
+  }
+
   @Override
   public List<UserModel> execute() {
-    final List<UserModel> users = getAllUsersPort.getAll();
-    return users;
+    return getAllUsersPort.getAll();
   }
 }

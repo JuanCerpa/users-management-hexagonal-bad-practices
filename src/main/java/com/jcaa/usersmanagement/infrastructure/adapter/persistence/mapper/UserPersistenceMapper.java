@@ -16,52 +16,57 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@UtilityClass
-public class UserPersistenceMapper {
+public final class UserPersistenceMapper {
+
+  private UserPersistenceMapper() {
+    throw new AssertionError("No instances of UserPersistenceMapper allowed");
+  }
 
   public static UserPersistenceDto fromModelToDto(final UserModel user) {
-    return new UserPersistenceDto(
-        user.idValue(),
-        user.nameValue(),
-        user.emailValue(),
-        user.passwordValue(),
-        user.roleName(),
-        user.statusName(),
-        null,
-        null);
+    String id = user.idValue();
+    String name = user.nameValue();
+    String email = user.emailValue();
+    String password = user.passwordValue();
+    String role = user.roleName();
+    String status = user.statusName();
+
+    return new UserPersistenceDto(id, name, email, password, role, status, null, null);
   }
 
   public static UserEntity fromResultSetToEntity(final ResultSet resultSet) throws SQLException {
-    return new UserEntity(
-        resultSet.getString("id"),
-        resultSet.getString("name"),
-        resultSet.getString("email"),
-        resultSet.getString("password"),
-        resultSet.getString("role"),
-        resultSet.getString("status"),
-        resultSet.getString("created_at"),
-        resultSet.getString("updated_at"));
+    String id = resultSet.getString("id");
+    String name = resultSet.getString("name");
+    String email = resultSet.getString("email");
+    String password = resultSet.getString("password");
+    String role = resultSet.getString("role");
+    String status = resultSet.getString("status");
+    String createdAt = resultSet.getString("created_at");
+    String updatedAt = resultSet.getString("updated_at");
+
+    return new UserEntity(id, name, email, password, role, status, createdAt, updatedAt);
   }
 
   public static UserModel fromEntityToModel(final UserEntity entity) {
-    return new UserModel(
-        new UserId(entity.id()),
-        new UserName(entity.name()),
-        new UserEmail(entity.email()),
-        UserPassword.fromHash(entity.password()),
-        UserRole.fromString(entity.role()),
-        UserStatus.fromString(entity.status()));
+    UserId idObj = new UserId(entity.id());
+    UserName nameObj = new UserName(entity.name());
+    UserEmail emailObj = new UserEmail(entity.email());
+    UserPassword passObj = UserPassword.fromHash(entity.password());
+    UserRole roleEnum = UserRole.fromString(entity.role());
+    UserStatus statusEnum = UserStatus.fromString(entity.status());
+
+    return new UserModel(idObj, nameObj, emailObj, passObj, roleEnum, statusEnum);
   }
 
   public static UserModel fromResultSetToModel(final ResultSet resultSet) throws SQLException {
-    return fromEntityToModel(fromResultSetToEntity(resultSet));
+    UserEntity entity = fromResultSetToEntity(resultSet);
+    return fromEntityToModel(entity);
   }
 
   public static List<UserModel> fromResultSetToModelList(final ResultSet resultSet) throws SQLException {
-    final List<UserModel> users = new ArrayList<>();
+    List<UserModel> list = new ArrayList<>();
     while (resultSet.next()) {
-      users.add(fromResultSetToModel(resultSet));
+      list.add(fromResultSetToModel(resultSet));
     }
-    return users;
+    return list;
   }
 }

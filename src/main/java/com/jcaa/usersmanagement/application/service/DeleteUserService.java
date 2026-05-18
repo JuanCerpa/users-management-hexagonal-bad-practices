@@ -17,32 +17,40 @@ import java.util.Set;
 import lombok.extern.java.Log;
 
 @Log
-@RequiredArgsConstructor
 public final class DeleteUserService implements DeleteUserUseCase {
 
   private final DeleteUserPort deleteUserPort;
   private final GetUserByIdPort getUserByIdPort;
   private final Validator validator;
 
-  @Override
-  public void execute(final DeleteUserCommand command) {
-    validateCommand(command);
-    final UserId userId = UserApplicationMapper.fromDeleteCommandToUserId(command);
-    ensureUserExists(userId);
-    deleteUserPort.delete(userId);
-    log.info(String.format("User deleted: %s", userId.value()));
+  public DeleteUserService(
+      DeleteUserPort deleteUserPort,
+      GetUserByIdPort getUserByIdPort,
+      Validator validator) {
+    this.deleteUserPort = deleteUserPort;
+    this.getUserByIdPort = getUserByIdPort;
+    this.validator = validator;
   }
 
-  private void validateCommand(final DeleteUserCommand command) {
-    final Set<ConstraintViolation<DeleteUserCommand>> violations = validator.validate(command);
+  @Override
+  public void execute(DeleteUserCommand command) {
+    verifyCommandConstraints(command);
+    UserId targetId = UserApplicationMapper.fromDeleteCommandToUserId(command);
+    checkUserExistence(targetId);
+    deleteUserPort.delete(targetId);
+    log.info(String.format("User deleted: %s", targetId.value()));
+  }
+
+  private void verifyCommandConstraints(DeleteUserCommand command) {
+    Set<ConstraintViolation<DeleteUserCommand>> violations = validator.validate(command);
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(violations);
     }
   }
 
-  private void ensureUserExists(final UserId userId) {
+  private void checkUserExistence(UserId targetId) {
     getUserByIdPort
-        .getById(userId)
-        .orElseThrow(() -> UserNotFoundException.becauseIdWasNotFound(userId.value()));
+        .getById(targetId)
+        .orElseThrow(() -> UserNotFoundException.becauseIdWasNotFound(targetId.value()));
   }
 }

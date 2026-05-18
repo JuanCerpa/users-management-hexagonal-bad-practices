@@ -13,40 +13,44 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-@RequiredArgsConstructor
 public final class LoginService implements LoginUseCase {
 
   private final GetUserByEmailPort getUserByEmailPort;
   private final Validator validator;
 
-  @Override
-  public UserModel execute(final LoginCommand command) {
-    validateCommand(command);
-
-    final UserEmail email = new UserEmail(command.email());
-    final UserModel user = findUserByEmail(email);
-
-    validateUserCredentials(user, command.password());
-
-    return user;
+  public LoginService(GetUserByEmailPort getUserByEmailPort, Validator validator) {
+    this.getUserByEmailPort = getUserByEmailPort;
+    this.validator = validator;
   }
 
-  private UserModel findUserByEmail(final UserEmail email) {
-    return getUserByEmailPort.getByEmail(email)
+  @Override
+  public UserModel execute(LoginCommand command) {
+    assertCommandValidity(command);
+
+    UserEmail emailAddress = new UserEmail(command.email());
+    UserModel domainUser = retrieveUser(emailAddress);
+
+    verifyCredentials(domainUser, command.password());
+
+    return domainUser;
+  }
+
+  private UserModel retrieveUser(UserEmail emailAddress) {
+    return getUserByEmailPort.getByEmail(emailAddress)
         .orElseThrow(InvalidCredentialsException::becauseCredentialsAreInvalid);
   }
 
-  private void validateUserCredentials(final UserModel user, final String plainPassword) {
-    if (!user.passwordMatches(plainPassword)) {
+  private void verifyCredentials(UserModel domainUser, String plainPassword) {
+    if (!domainUser.passwordMatches(plainPassword)) {
       throw InvalidCredentialsException.becauseCredentialsAreInvalid();
     }
-    if (!user.isActive()) {
+    if (!domainUser.isActive()) {
       throw InvalidCredentialsException.becauseUserIsNotActive();
     }
   }
 
-  private void validateCommand(final LoginCommand command) {
-    final Set<ConstraintViolation<LoginCommand>> violations = validator.validate(command);
+  private void assertCommandValidity(LoginCommand command) {
+    Set<ConstraintViolation<LoginCommand>> violations = validator.validate(command);
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(violations);
     }

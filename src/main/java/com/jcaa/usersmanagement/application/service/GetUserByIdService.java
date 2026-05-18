@@ -14,24 +14,28 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-@RequiredArgsConstructor
 public final class GetUserByIdService implements GetUserByIdUseCase {
 
   private final GetUserByIdPort getUserByIdPort;
   private final Validator validator;
 
-  @Override
-  public UserModel execute(final GetUserByIdQuery query) {
-    validateQuery(query);
-
-    final UserId userId = UserApplicationMapper.fromGetUserByIdQueryToUserId(query);
-    return getUserByIdPort
-        .getById(userId)
-        .orElseThrow(() -> UserNotFoundException.becauseIdWasNotFound(userId.value()));
+  public GetUserByIdService(GetUserByIdPort getUserByIdPort, Validator validator) {
+    this.getUserByIdPort = getUserByIdPort;
+    this.validator = validator;
   }
 
-  private void validateQuery(final GetUserByIdQuery query) {
-    final Set<ConstraintViolation<GetUserByIdQuery>> violations = validator.validate(query);
+  @Override
+  public UserModel execute(GetUserByIdQuery query) {
+    verifyQuery(query);
+
+    UserId id = UserApplicationMapper.fromGetUserByIdQueryToUserId(query);
+    return getUserByIdPort
+        .getById(id)
+        .orElseThrow(() -> UserNotFoundException.becauseIdWasNotFound(id.value()));
+  }
+
+  private void verifyQuery(GetUserByIdQuery query) {
+    Set<ConstraintViolation<GetUserByIdQuery>> violations = validator.validate(query);
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(violations);
     }

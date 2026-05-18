@@ -15,40 +15,34 @@ import java.util.Objects;
 
 import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class UserApplicationMapper {
+public final class UserApplicationMapper {
+
+  private UserApplicationMapper() {
+    throw new UnsupportedOperationException("Utility class should not be instantiated");
+  }
 
   public static UserModel fromCreateCommandToModel(final CreateUserCommand command) {
-    final String userId    = command.id();
-    final String userName  = command.name();
-    final String email     = command.email();
-    final String userPass  = command.password();
-    final String userRole  = command.role();
+    UserId idStr = new UserId(command.id());
+    UserName nameStr = new UserName(command.name());
+    UserEmail emailStr = new UserEmail(command.email());
+    UserPassword passStr = UserPassword.fromPlainText(command.password());
+    UserRole roleStr = UserRole.fromString(command.role());
 
-    return UserModel.create(
-        new UserId(userId),
-        new UserName(userName),
-        new UserEmail(email),
-        UserPassword.fromPlainText(userPass),
-        UserRole.fromString(userRole));
+    return UserModel.create(idStr, nameStr, emailStr, passStr, roleStr);
   }
 
   public static UserModel fromUpdateCommandToModel(
       final UpdateUserCommand command, final UserPassword currentPassword) {
 
-    UserPassword passwordToUse;
-    if (command.password() == null || command.password().isBlank()) {
-      passwordToUse = currentPassword;
-    } else {
-      passwordToUse = UserPassword.fromPlainText(command.password());
-    }
-
-    final String email = command.email();
+    String commandPass = command.password();
+    UserPassword passwordToUse = (commandPass == null || commandPass.isBlank())
+        ? currentPassword
+        : UserPassword.fromPlainText(commandPass);
 
     return new UserModel(
         new UserId(command.id()),
         new UserName(command.name()),
-        new UserEmail(email),
+        new UserEmail(command.email()),
         passwordToUse,
         UserRole.fromString(command.role()),
         UserStatus.fromString(command.status()));

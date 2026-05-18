@@ -20,7 +20,6 @@ import lombok.extern.java.Log;
 import java.util.Set;
 
 @Log
-@RequiredArgsConstructor
 public final class UpdateUserService implements UpdateUserUseCase {
 
   private final UpdateUserPort updateUserPort;
@@ -29,43 +28,56 @@ public final class UpdateUserService implements UpdateUserUseCase {
   private final EmailNotificationService emailNotificationService;
   private final Validator validator;
 
+  public UpdateUserService(
+      UpdateUserPort updateUserPort,
+      GetUserByIdPort getUserByIdPort,
+      GetUserByEmailPort getUserByEmailPort,
+      EmailNotificationService emailNotificationService,
+      Validator validator) {
+    this.updateUserPort = updateUserPort;
+    this.getUserByIdPort = getUserByIdPort;
+    this.getUserByEmailPort = getUserByEmailPort;
+    this.emailNotificationService = emailNotificationService;
+    this.validator = validator;
+  }
+
   @Override
-  public void execute(final UpdateUserCommand command) {
-    validateCommand(command);
+  public void execute(UpdateUserCommand command) {
+    verifyCommand(command);
 
     log.info("Actualizando usuario id=" + command.id());
 
-    final UserId userId = new UserId(command.id());
-    final UserModel current = findExistingUserOrFail(userId);
-    final UserEmail newEmail = new UserEmail(command.email());
+    UserId id = new UserId(command.id());
+    UserModel existingUser = fetchExistingUser(id);
+    UserEmail emailAddress = new UserEmail(command.email());
 
-    ensureEmailIsNotTakenByAnotherUser(newEmail, userId);
+    checkEmailAvailability(emailAddress, id);
 
-    final UserModel userToUpdate =
-        UserApplicationMapper.fromUpdateCommandToModel(command, current.getPassword());
-    final UserModel updatedUser = updateUserPort.update(userToUpdate);
+    UserModel userToUpdate =
+        UserApplicationMapper.fromUpdateCommandToModel(command, existingUser.getPassword());
+    UserModel updatedUser = updateUserPort.update(userToUpdate);
 
     emailNotificationService.notifyUserUpdated(updatedUser);
   }
 
-  private void validateCommand(final UpdateUserCommand command) {
-    final Set<ConstraintViolation<UpdateUserCommand>> violations = validator.validate(command);
+  private void verifyCommand(UpdateUserCommand command) {
+    Set<ConstraintViolation<UpdateUserCommand>> violations = validator.validate(command);
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(violations);
     }
   }
 
-  private UserModel findExistingUserOrFail(final UserId userId) {
+  private UserModel fetchExistingUser(UserId id) {
     return getUserByIdPort
-        .getById(userId)
-        .orElseThrow(() -> UserNotFoundException.becauseIdWasNotFound(userId.value()));
+        .getById(id)
+        .orElseThrow(() -> UserNotFoundException.becauseIdWasNotFound(id.value()));
   }
 
-  private void ensureEmailIsNotTakenByAnotherUser(final UserEmail newEmail, final UserId ownerId) {
-    getUserByEmailPort.getByEmail(newEmail)
-        .ifPresent(existingUser -> {
-          if (!existingUser.getId().equals(ownerId)) {
-            throw UserAlreadyExistsException.becauseEmailAlreadyExists(newEmail.value());
+  private void checkEmailAvailability(UserEmail emailAddress, UserId ownerId) {
+    getUserByEmailPort.getByEmail(emailAddress)
+        .ifPresent(existing -> {
+          if (!existing.getId().equals(ownerId)) {
+            throw UserAlreadyExistsException.becauseEmailAlreadyExists(emailAddress.value());
           }
         });
   }

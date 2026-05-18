@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-@RequiredArgsConstructor
 public final class CreateUserService implements CreateUserUseCase {
 
   private final SaveUserPort saveUserPort;
@@ -23,30 +22,37 @@ public final class CreateUserService implements CreateUserUseCase {
   private final EmailNotificationService emailNotificationService;
   private final Validator validator;
 
-  @Override
-  public UserModel execute(final CreateUserCommand command) {
-
-    validateCommand(command);
-
-    ensureEmailIsNotTaken(new UserEmail(command.email()));
-
-    final UserModel userToSave = UserApplicationMapper.fromCreateCommandToModel(command);
-
-    final UserModel savedUser = saveUserPort.save(userToSave);
-
-    emailNotificationService.notifyUserCreated(savedUser, command.password());
-
-    return savedUser;
+  public CreateUserService(
+      SaveUserPort saveUserPort,
+      GetUserByEmailPort getUserByEmailPort,
+      EmailNotificationService emailNotificationService,
+      Validator validator) {
+    this.saveUserPort = saveUserPort;
+    this.getUserByEmailPort = getUserByEmailPort;
+    this.emailNotificationService = emailNotificationService;
+    this.validator = validator;
   }
 
-  private void ensureEmailIsNotTaken(final UserEmail email) {
-    if (getUserByEmailPort.getByEmail(email).isPresent()) {
-      throw UserAlreadyExistsException.becauseEmailAlreadyExists(email.value());
+  @Override
+  public UserModel execute(CreateUserCommand command) {
+    assertCommandIsValid(command);
+    verifyEmailUniqueness(new UserEmail(command.email()));
+
+    UserModel domainUser = UserApplicationMapper.fromCreateCommandToModel(command);
+    UserModel persistedUser = saveUserPort.save(domainUser);
+
+    emailNotificationService.notifyUserCreated(persistedUser, command.password());
+    return persistedUser;
+  }
+
+  private void verifyEmailUniqueness(UserEmail emailAddress) {
+    if (getUserByEmailPort.getByEmail(emailAddress).isPresent()) {
+      throw UserAlreadyExistsException.becauseEmailAlreadyExists(emailAddress.value());
     }
   }
 
-  private void validateCommand(final CreateUserCommand command) {
-    final Set<ConstraintViolation<CreateUserCommand>> violations = validator.validate(command);
+  private void assertCommandIsValid(CreateUserCommand cmd) {
+    Set<ConstraintViolation<CreateUserCommand>> violations = validator.validate(cmd);
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(violations);
     }
